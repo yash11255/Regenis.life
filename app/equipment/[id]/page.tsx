@@ -1,0 +1,431 @@
+import React from "react";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import PageShell from "../../components/PageShell";
+import { equipmentMockData } from "../../data/equipment";
+import Link from "next/link";
+import Image from "next/image";
+import { ChevronLeft, ArrowUpRight } from "lucide-react";
+import EquipmentCarousel from "../../components/equipment/EquipmentCarousel";
+import { SchemaScript } from "../../components/SchemaScript";
+import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { generateBreadcrumbSchema, type LDJsonSchema } from "@/lib/schema";
+
+interface EquipmentDetailPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export function generateStaticParams() {
+  return equipmentMockData.map((equipment) => ({
+    id: equipment.id,
+  }));
+}
+
+export async function generateMetadata({ params }: EquipmentDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const equipment = equipmentMockData.find((eq) => eq.id === id);
+
+  if (!equipment) {
+    return {
+      title: "Equipment Not Found",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const title = `${equipment.name} | ${equipment.partner} — ${equipment.tagline}`;
+  const description = equipment.description;
+  const canonicalUrl = `${BUSINESS_URL}/equipment/${equipment.id}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/equipment/${equipment.id}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      images: [{ url: equipment.image, alt: equipment.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [equipment.image],
+    },
+  };
+}
+
+export default async function EquipmentDetailPage({
+  params,
+}: EquipmentDetailPageProps) {
+  const resolvedParams = await params;
+  const equipment = equipmentMockData.find((eq) => eq.id === resolvedParams.id);
+
+  if (!equipment) {
+    notFound();
+  }
+
+  const canonicalUrl = `${BUSINESS_URL}/equipment/${equipment.id}`;
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { label: "Home", url: BUSINESS_URL },
+    { label: "Equipment", url: `${BUSINESS_URL}/equipment` },
+    { label: "All Equipment", url: `${BUSINESS_URL}/equipment/all` },
+    { label: equipment.name, url: canonicalUrl },
+  ]);
+  const productSchema: LDJsonSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalDevice",
+    name: equipment.name,
+    description: equipment.fullDescription || equipment.description,
+    url: canonicalUrl,
+    image: equipment.images?.length ? equipment.images : [equipment.image],
+    manufacturer: {
+      "@type": "Organization",
+      name: equipment.partner,
+    },
+    ...(equipment.specifications?.length
+      ? {
+          additionalProperty: equipment.specifications.map((spec) => ({
+            "@type": "PropertyValue",
+            name: spec.label,
+            value: spec.value,
+          })),
+        }
+      : {}),
+    brand: {
+      "@type": "Brand",
+      name: equipment.partner,
+    },
+    seller: {
+      "@type": "Organization",
+      name: BUSINESS_NAME,
+      url: BUSINESS_URL,
+    },
+  };
+
+  return (
+    <PageShell headerVariant="solid">
+      <main className="font-sans antialiased bg-white text-[#262626] min-h-screen">
+        <SchemaScript id="equipment-detail-schema" schema={[breadcrumbSchema, productSchema]} />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+            * { box-sizing: border-box; }
+            body { font-family: 'Plus Jakarta Sans', Helvetica, Arial, sans-serif; }
+
+            /* ── Image panel: fills full height on desktop, fixed height on mobile ── */
+            .detail-image-panel {
+              position: relative;
+              width: 100%;
+              min-height: clamp(320px, 55vw, 800px);
+            }
+            @media (min-width: 1024px) {
+              .detail-image-panel {
+                /* Stretch to fill the grid row on desktop */
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                min-height: unset;
+              }
+            }
+
+            /* ── Back link ── */
+            .back-link {
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              font-size: 11px;
+              font-weight: 700;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              color: #757575;
+              text-decoration: none;
+              transition: color 0.2s;
+            }
+            .back-link:hover { color: #1c69d4; }
+
+            /* ── Section layout ── */
+            .detail-grid {
+              display: grid;
+              grid-template-columns: 1fr;
+              border-top: 1px solid rgba(38, 38, 38, 0.12);
+            }
+            @media (min-width: 1024px) {
+              .detail-grid {
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
+              }
+            }
+
+            /* ── Text panel ── */
+            .detail-text {
+              padding: clamp(40px, 7vw, 80px) clamp(24px, 6vw, 64px);
+              border-bottom: 1px solid rgba(38, 38, 38, 0.12);
+            }
+            @media (min-width: 1024px) {
+              .detail-text {
+                border-bottom: none;
+                border-right: 1px solid rgba(38, 38, 38, 0.12);
+              }
+            }
+
+            /* ── Specs table ── */
+            .spec-row {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+              padding: 14px 0;
+              border-bottom: 1px solid rgba(38, 38, 38, 0.10);
+            }
+            @media (min-width: 480px) {
+              .spec-row {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: 16px;
+              }
+            }
+
+            /* ── Footer social links ── */
+            .footer-social-link {
+              font-size: 10px;
+              color: rgba(255,255,255,0.4);
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+              font-weight: 400;
+              text-decoration: none;
+              transition: color 0.2s;
+            }
+            .footer-social-link:hover { color: #fff; }
+
+            /* ── Enquire button ── */
+            .cta-btn {
+              display: inline-flex;
+              align-items: center;
+              gap: 12px;
+              padding: 16px 32px;
+              background: #262626;
+              color: #fff;
+              font-size: 12px;
+              font-weight: 700;
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+              text-decoration: none;
+              transition: background 0.25s, box-shadow 0.25s;
+            }
+            .cta-btn:hover {
+              background: #1c69d4;
+              box-shadow: 0 12px 32px rgba(28, 105, 212, 0.25);
+            }
+          `,
+          }}
+        />
+
+        {/* ── Back navigation ── */}
+        <div className="pt-24 pb-4 px-[clamp(24px,5vw,80px)]">
+          <Link href="/equipment/all" className="back-link">
+            <ChevronLeft size={16} />
+            Back to All Equipment
+          </Link>
+        </div>
+
+        {/* ── Main content grid ── */}
+        <section className="detail-grid mt-4 lg:mt-8">
+
+          {/* Text panel */}
+          <div className="detail-text flex flex-col">
+
+            {/* ID + tagline */}
+            <div className="flex items-center gap-4 mb-8 flex-wrap">
+              <span className="text-[10px] font-bold tracking-[0.1em] text-[#bbbbbb]">
+                {equipment.id}
+              </span>
+              <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#1c69d4]">
+                {equipment.tagline}
+              </div>
+              {equipment.badge && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-bold tracking-wider uppercase bg-[#1c69d4]/10 text-[#1c69d4] border border-[#1c69d4]/20 shadow-[0_0_8px_rgba(28,105,212,0.06)] animate-pulse">
+                  {equipment.badge}
+                </span>
+              )}
+            </div>
+
+            {/* Partner logo */}
+            <div className="relative mb-10 self-start" style={{ width: 168, height: 42 }}>
+              <Image
+                src={equipment.logo}
+                alt={equipment.partner}
+                fill
+                sizes="168px"
+                className="object-contain object-left grayscale"
+              />
+            </div>
+
+            {/* Name */}
+            <h1
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "clamp(32px, 5vw, 72px)",
+                fontWeight: 300,
+                lineHeight: 1.1,
+                textTransform: "uppercase",
+                letterSpacing: "0.01em",
+                color: "#262626",
+                marginBottom: 32,
+              }}
+            >
+              {equipment.name}
+            </h1>
+
+            {/* Description */}
+            <p
+              style={{
+                fontSize: "clamp(14px, 1.4vw, 16px)",
+                lineHeight: 1.8,
+                color: "#757575",
+                fontWeight: 300,
+                maxWidth: 480,
+                marginBottom: 48,
+              }}
+            >
+              {equipment.fullDescription || equipment.description}
+            </p>
+
+            {/* Specifications */}
+            {equipment.specifications && (
+              <div className="mb-10" style={{ maxWidth: 480 }}>
+                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#262626] mb-6 uppercase">
+                  Technical Specifications
+                </h3>
+                <div style={{ borderTop: "1px solid rgba(38,38,38,0.12)" }}>
+                  {equipment.specifications.map((spec, i) => (
+                    <div key={i} className="spec-row">
+                      <span style={{ fontSize: 13, color: "#757575", flexShrink: 0 }}>
+                        {spec.label}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#262626",
+                        }}
+                      >
+                        {spec.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Features */}
+            {equipment.features && (
+              <div className="mb-12" style={{ maxWidth: 480 }}>
+                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#262626] mb-6 uppercase">
+                  Key Features
+                </h3>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {equipment.features.map((feature, i) => (
+                    <li
+                      key={i}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 14,
+                        marginBottom: 16,
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: 6,
+                          height: 6,
+                          background: "#1c69d4",
+                          borderRadius: 0,
+                          marginTop: 8,
+                          flexShrink: 0,
+                          display: "block",
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 15,
+                          lineHeight: 1.65,
+                          color: "#757575",
+                          fontWeight: 300,
+                        }}
+                      >
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* CTA */}
+            <div className="mt-auto pt-8">
+              <Link href="/equipment/all" className="cta-btn">
+                Enquire Now
+                <ArrowUpRight size={16} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Image panel — sticky on desktop, fixed height on mobile, containing dynamic brand carousel */}
+          <div className="detail-image-panel" style={{ overflow: "hidden" }}>
+            <EquipmentCarousel
+              images={equipment.images || [equipment.image]}
+              alt={equipment.name}
+            />
+            {/* Subtle number overlay */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 24,
+                right: 24,
+                fontSize: 72,
+                fontWeight: 900,
+                color: "rgba(255,255,255,0.07)",
+                lineHeight: 1,
+                letterSpacing: "-0.04em",
+                pointerEvents: "none",
+                userSelect: "none",
+                zIndex: 5,
+              }}
+            >
+              {equipment.id}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Footer ── */}
+        <section
+          style={{
+            padding: "clamp(48px,6vw,80px) clamp(24px,6vw,88px)",
+            background: "#141414",
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 400,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#bbbbbb",
+            }}
+          >
+            Regenis Life © {new Date().getFullYear()}
+          </div>
+        </section>
+      </main>
+    </PageShell>
+  );
+}

@@ -1,0 +1,392 @@
+/**
+ * SEO Schema Generation Library
+ * Provides TypeScript-safe schema generators for JSON-LD markup
+ * Usage: Use these functions to generate schema for meta tags via next/script
+ */
+
+// ============================================================================
+// TYPE DEFINITIONS
+// ============================================================================
+
+export interface PostalAddress {
+  "@type": "PostalAddress";
+  streetAddress: string;
+  addressLocality: string;
+  addressRegion: string;
+  postalCode: string;
+  addressCountry: string;
+}
+
+export interface GeoCoordinates {
+  "@type": "GeoCoordinates";
+  latitude: number;
+  longitude: number;
+}
+
+export interface ContactPoint {
+  "@type": "ContactPoint";
+  telephone: string;
+  contactType: "Customer Service" | "Support" | "Emergency Support" | "Sales";
+  email?: string;
+  areaServed?: string;
+}
+
+export interface OpeningHoursSpecification {
+  "@type": "OpeningHoursSpecification";
+  dayOfWeek: string[];
+  opens: string;
+  closes: string;
+}
+
+export interface MedicalService {
+  "@type": "MedicalBusiness" | "Thing";
+  name: string;
+  description?: string;
+  url?: string;
+}
+
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface LDJsonSchema {
+  "@context": "https://schema.org";
+  "@type": string;
+  [key: string]: unknown;
+}
+
+// ============================================================================
+// ORGANIZATION SCHEMA
+// ============================================================================
+
+export interface OrganizationSchemaParams {
+  name: string;
+  url: string;
+  logo: string;
+  image: string;
+  description: string;
+  address?: PostalAddress;
+  telephone: string[];
+  email: string[];
+  sameAs: string[];
+}
+
+export function generateOrganizationSchema(
+  params: OrganizationSchemaParams
+): LDJsonSchema {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: params.name,
+    url: params.url,
+    logo: {
+      "@type": "ImageObject",
+      url: params.logo,
+      width: 200,
+      height: 200,
+    },
+    image: {
+      "@type": "ImageObject",
+      url: params.image,
+      width: 1200,
+      height: 628,
+    },
+    description: params.description,
+    sameAs: params.sameAs,
+    telephone: params.telephone,
+    email: params.email,
+  };
+}
+
+// ============================================================================
+// MEDICAL BUSINESS / LOCAL BUSINESS SCHEMA
+// ============================================================================
+
+export interface MedicalBusinessSchemaParams {
+  name: string;
+  url: string;
+  logo: string;
+  image: string;
+  description: string;
+  address: PostalAddress;
+  geo: GeoCoordinates;
+  telephone: string[];
+  email: string[];
+  contactPoints: ContactPoint[];
+  openingHours: OpeningHoursSpecification[];
+  areaServed: string[];
+  services: MedicalService[];
+  priceRange?: string;
+  rating?: {
+    ratingValue: number;
+    reviewCount: number;
+  };
+  sameAs?: string[];
+}
+
+export function generateMedicalBusinessSchema(
+  params: MedicalBusinessSchemaParams
+): LDJsonSchema {
+  const schema: LDJsonSchema = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    name: params.name,
+    url: params.url,
+    logo: {
+      "@type": "ImageObject",
+      url: params.logo,
+      width: 200,
+      height: 200,
+    },
+    image: {
+      "@type": "ImageObject",
+      url: params.image,
+      width: 1200,
+      height: 628,
+    },
+    description: params.description,
+    address: params.address,
+    geo: params.geo,
+    telephone: params.telephone,
+    email: params.email,
+    contactPoint: params.contactPoints,
+    openingHoursSpecification: params.openingHours,
+    areaServed: params.areaServed,
+    availableService: params.services,
+  };
+
+  if (params.priceRange) {
+    schema.priceRange = params.priceRange;
+  }
+
+  if (params.rating) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: params.rating.ratingValue,
+      reviewCount: params.rating.reviewCount,
+    };
+  }
+
+  if (params.sameAs?.length) {
+    schema.sameAs = params.sameAs;
+  }
+
+  return schema;
+}
+
+// ============================================================================
+// FAQ SCHEMA (Page-Level Only)
+// ============================================================================
+
+export interface FAQQuestionAnswer {
+  "@type": "Question";
+  name: string;
+  acceptedAnswer: {
+    "@type": "Answer";
+    text: string;
+  };
+}
+
+export function generateFAQSchema(faqs: FAQItem[]): LDJsonSchema {
+  if (!Array.isArray(faqs) || faqs.length === 0) {
+    console.warn("generateFAQSchema: faqs array is empty or invalid");
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: [],
+    };
+  }
+
+  const mainEntity: FAQQuestionAnswer[] = faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  }));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity,
+  };
+}
+
+// ============================================================================
+// BREADCRUMB SCHEMA (Utility for structured navigation)
+// ============================================================================
+
+export interface BreadcrumbItem {
+  label: string;
+  url: string;
+}
+
+export function generateBreadcrumbSchema(items: BreadcrumbItem[]): LDJsonSchema {
+  const itemListElement = items.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.label,
+    item: item.url,
+  }));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement,
+  };
+}
+
+// ============================================================================
+// WEB / COLLECTION / DISCOVERY SCHEMAS
+// ============================================================================
+
+export interface WebSiteSchemaParams {
+  name: string;
+  url: string;
+  searchUrl?: string;
+}
+
+export function generateWebSiteSchema(params: WebSiteSchemaParams): LDJsonSchema {
+  const schema: LDJsonSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: params.name,
+    url: params.url,
+  };
+
+  if (params.searchUrl) {
+    schema.potentialAction = {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: params.searchUrl,
+      },
+      "query-input": "required name=search_term_string",
+    };
+  }
+
+  return schema;
+}
+
+export interface WebPageSchemaParams {
+  name: string;
+  url: string;
+  description: string;
+  pageType?: "WebPage" | "MedicalWebPage" | "CollectionPage" | "ContactPage" | "AboutPage";
+  isPartOf?: {
+    name: string;
+    url: string;
+  };
+  about?: unknown;
+  mainEntity?: unknown;
+}
+
+export function generateWebPageSchema(params: WebPageSchemaParams): LDJsonSchema {
+  const schema: LDJsonSchema = {
+    "@context": "https://schema.org",
+    "@type": params.pageType || "WebPage",
+    name: params.name,
+    url: params.url,
+    description: params.description,
+  };
+
+  if (params.isPartOf) {
+    schema.isPartOf = {
+      "@type": "WebSite",
+      name: params.isPartOf.name,
+      url: params.isPartOf.url,
+    };
+  }
+
+  if (params.about) {
+    schema.about = params.about;
+  }
+
+  if (params.mainEntity) {
+    schema.mainEntity = params.mainEntity;
+  }
+
+  return schema;
+}
+
+export interface ItemListEntry {
+  name: string;
+  url: string;
+  description?: string;
+  image?: string;
+}
+
+export function generateItemListSchema(
+  name: string,
+  items: ItemListEntry[]
+): LDJsonSchema {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      url: item.url,
+      item: {
+        "@type": "Thing",
+        name: item.name,
+        url: item.url,
+        ...(item.description ? { description: item.description } : {}),
+        ...(item.image ? { image: item.image } : {}),
+      },
+    })),
+  };
+}
+
+export function generateOfferCatalogSchema(
+  name: string,
+  items: ItemListEntry[]
+): LDJsonSchema {
+  return {
+    "@context": "https://schema.org",
+    "@type": "OfferCatalog",
+    name,
+    itemListElement: items.map((item) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: item.name,
+        url: item.url,
+        ...(item.description ? { description: item.description } : {}),
+      },
+    })),
+  };
+}
+
+// ============================================================================
+// HELPER UTILITIES
+// ============================================================================
+
+/**
+ * Safely serialize schema to JSON string
+ * Handles circular references and undefined values
+ */
+export function serializeSchema(schema: LDJsonSchema): string {
+  try {
+    return JSON.stringify(schema);
+  } catch (error) {
+    console.error("Schema serialization error:", error);
+    return "{}";
+  }
+}
+
+/**
+ * Validate schema structure (basic check)
+ */
+export function isValidSchema(schema: unknown): schema is LDJsonSchema {
+  return (
+    typeof schema === "object" &&
+    schema !== null &&
+    "@context" in schema &&
+    "@type" in schema
+  );
+}
