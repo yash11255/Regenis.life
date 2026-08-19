@@ -12,7 +12,7 @@ import {
   generateWebPageSchema,
 } from "@/lib/schema";
 
-import { equipmentMockData } from "../../data/equipment";
+import { visibleEquipment } from "../../data/equipment";
 
 const PAGE_URL = `${BUSINESS_URL}/equipment/all`;
 const PAGE_DESCRIPTION =
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     description: PAGE_DESCRIPTION,
     url: "/equipment/all",
     type: "website",
-    images: equipmentMockData[0] ? [{ url: equipmentMockData[0].image, alt: equipmentMockData[0].name }] : undefined,
+    images: visibleEquipment[0] ? [{ url: visibleEquipment[0].image, alt: visibleEquipment[0].name }] : undefined,
   },
   twitter: {
     card: "summary_large_image",
@@ -53,7 +53,7 @@ export default function AllEquipmentPage() {
   ]);
   const itemListSchema = generateItemListSchema(
     "Regenis Life Equipment Partners",
-    equipmentMockData.map((eq) => ({
+    visibleEquipment.map((eq) => ({
       name: `${eq.partner} - ${eq.name}`,
       url: `${BUSINESS_URL}/equipment/${eq.id}`,
       description: eq.description,
@@ -88,7 +88,7 @@ export default function AllEquipmentPage() {
           </h1>
         </section>
 
-        <PartnerSection equipments={equipmentMockData} />
+        <PartnerSection equipments={visibleEquipment} />
 
         {/* Footer */}
         <section className="px-[clamp(36px,6vw,88px)] py-[clamp(64px,8vw,112px)] bg-[#141414] text-white border-t border-white/[0.08] text-center">

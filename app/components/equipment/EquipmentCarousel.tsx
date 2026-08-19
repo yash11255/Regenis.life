@@ -17,10 +17,11 @@ export default function EquipmentCarousel({ images, alt }: EquipmentCarouselProp
   useEffect(() => {
     if (images.length <= 1) return;
     const timer = setInterval(() => {
-      handleNext();
+      setDirection(1);
+      setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     }, 6000);
     return () => clearInterval(timer);
-  }, [activeIndex, images.length]);
+  }, [images.length]);
 
   if (!images || images.length === 0) return null;
 

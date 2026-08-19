@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { equipmentMockData } from "../../data/equipment";
+import { visibleEquipment } from "../../data/equipment";
 
 // Derive the unique manufacturer partners directly from the equipment
 // catalog so this strip always stays in sync with what's actually stocked.
 const PARTNERS = Array.from(
-  equipmentMockData.reduce((map, eq) => {
+  visibleEquipment.reduce((map, eq) => {
     const entry = map.get(eq.partner) || { logo: eq.logo, count: 0 };
     entry.count += 1;
     map.set(eq.partner, entry);
@@ -25,7 +25,7 @@ export default function PartnerBrandsSection({
   ctaLabel = "View Equipment Partners",
 }: PartnerBrandsSectionProps) {
   return (
-    <section className="partner-brands bg-white text-[#262626] antialiased">
+    <section id="partners" className="partner-brands bg-white text-[#262626] antialiased scroll-mt-32">
       <style dangerouslySetInnerHTML={{
         __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
@@ -65,11 +65,17 @@ export default function PartnerBrandsSection({
               className="border-r border-b border-[#262626]/[0.12] px-6 py-10 flex flex-col items-center justify-center gap-5 text-center"
             >
               <div className="h-12 w-full flex items-center justify-center">
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="max-h-12 max-w-[128px] w-auto h-auto object-contain"
-                />
+                {partner.logo ? (
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="max-h-12 max-w-[128px] w-auto h-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-[12px] font-bold tracking-[0.12em] uppercase text-[#262626]">
+                    {partner.name}
+                  </span>
+                )}
               </div>
               <span className="text-[10px] font-bold tracking-[0.1em] uppercase text-[#bbbbbb]">
                 {partner.count} {partner.count === 1 ? "Device" : "Devices"}

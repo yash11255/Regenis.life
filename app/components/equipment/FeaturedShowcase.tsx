@@ -6,7 +6,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import type { Equipment } from "../../data/equipment";
-import { equipmentMockData } from "../../data/equipment";
+import { visibleEquipment } from "../../data/equipment";
 
 interface FeaturedShowcaseProps {
   eyebrow?: string;
@@ -23,7 +23,7 @@ export default function FeaturedShowcase({
       Clinical Precision. <span className="text-[#1c69d4]">Engineered</span> Technology.
     </>
   ),
-  items = equipmentMockData.slice(0, 6),
+  items = visibleEquipment.slice(0, 6),
   ctaHref = "/equipment/all",
   ctaLabel = "View All Equipment",
 }: FeaturedShowcaseProps) {
@@ -73,7 +73,7 @@ export default function FeaturedShowcase({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlideIndex]);
 
-  const scrollToCard = (index: number) => {
+  function scrollToCard(index: number) {
     const container = scrollRef.current;
     if (!container) return;
     const targetIndex = Math.max(0, Math.min(index, maxSlideIndex));
@@ -98,7 +98,7 @@ export default function FeaturedShowcase({
   };
 
   return (
-    <section className="equipment-featured-showcase bg-[#141414] text-white antialiased overflow-hidden">
+    <section id="featured-devices" className="equipment-featured-showcase bg-[#141414] text-white antialiased overflow-hidden scroll-mt-32">
       <style dangerouslySetInnerHTML={{
         __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');

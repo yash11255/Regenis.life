@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Check } from "lucide-react";
@@ -19,13 +19,6 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !email || !phone) {
@@ -54,12 +47,12 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
     onClose();
   };
 
-  if (!mounted) return null;
+  if (typeof document === "undefined") return null;
 
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-stretch justify-end font-inter overflow-hidden">
+        <div className="fixed inset-0 z-[9999] flex items-stretch justify-end font-inter overflow-hidden">
           {/* Backdrop blur overlay */}
           <motion.div 
             className="absolute inset-0 bg-[#141414]/30 backdrop-blur-sm"
@@ -72,7 +65,7 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
           
           {/* Modal Panel */}
           <motion.div 
-            className="relative w-full max-w-[500px] h-screen bg-white flex flex-col border-l border-[#262626]/[0.12] shadow-2xl overflow-hidden"
+            className="relative z-10 w-full max-w-[500px] h-screen bg-white flex flex-col border-l border-[#262626]/[0.12] shadow-2xl overflow-hidden"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

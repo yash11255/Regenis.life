@@ -4,6 +4,7 @@ import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { BUSINESS_EMAIL } from "@/lib/business-config";
 
 export default function Hero() {
   const { scrollYProgress } = useScroll();
@@ -34,7 +35,7 @@ export default function Hero() {
       {/* Gradient Fade */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/30 to-transparent pointer-events-none z-[1]" />
 
-      <div className="relative z-10 px-[clamp(24px,5vw,80px)] py-[clamp(64px,8vw,100px)]">
+      <div className="relative z-10 px-[clamp(24px,5vw,80px)] pt-[clamp(64px,8vw,100px)] pb-[clamp(48px,6vw,72px)]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -50,19 +51,19 @@ export default function Hero() {
           </h1>
 
           <p className="text-[clamp(15px,1.5vw,18px)] font-light leading-[1.55] text-[#bbbbbb] max-w-[520px] mb-14">
-            The world's most advanced medical equipment platforms. Precision-selected for clinical environments where outcomes define reputation.
+            The world&apos;s most advanced medical equipment platforms. Precision-selected for clinical environments where outcomes define reputation.
           </p>
 
           <div className="flex gap-5 flex-wrap items-center">
             <a
-              href="#showcase"
+              href="#featured-devices"
               className="inline-flex items-center gap-[10px] px-8 py-[15px] bg-transparent text-white text-base font-bold leading-[1.2] no-underline border-b border-white transition-colors duration-200 cursor-pointer rounded-none hover:bg-white hover:text-[#262626]"
             >
               Explore Equipment
               <ChevronRight size={16} strokeWidth={2} />
             </a>
             <Link
-              href="/contact"
+              href={`mailto:${BUSINESS_EMAIL[0]}`}
               className="inline-flex items-center gap-[6px] text-[11px] font-bold tracking-[0.13em] uppercase text-[#bbbbbb] no-underline border-b border-white/30 pb-[2px] transition-colors duration-200 rounded-none hover:text-[#0653b6] hover:border-[#0653b6]"
             >
               Request Consultation

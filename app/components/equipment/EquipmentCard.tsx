@@ -30,7 +30,6 @@ export default function EquipmentCard({
   logo,
   onEnquire,
   index,
-  isExclusive,
   badge,
 }: EquipmentCardProps) {
   return (
@@ -38,8 +37,8 @@ export default function EquipmentCard({
       className="group grid grid-cols-1 lg:grid-cols-2 border-b border-[#262626]/[0.12]"
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, delay: Math.min(index * 0.025, 0.12), ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-[#262626]/[0.12] px-[clamp(32px,6vw,64px)] py-[clamp(48px,8vw,80px)]">
         <div className="flex items-center gap-4 mb-6 flex-wrap">
@@ -99,13 +98,19 @@ export default function EquipmentCard({
         </motion.div>
         
         <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-md px-6 py-3 border-l-[3px] border-[#1c69d4]">
-          <div className="relative h-[32px] w-36">
-            <Image
-              src={logo}
-              alt={partner}
-              fill
-              className="object-contain object-left grayscale"
-            />
+          <div className="relative h-[32px] w-36 flex items-center">
+            {logo ? (
+              <Image
+                src={logo}
+                alt={partner}
+                fill
+                className="object-contain object-left grayscale"
+              />
+            ) : (
+              <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-[#262626]">
+                {partner}
+              </span>
+            )}
           </div>
         </div>
       </Link>

@@ -12,12 +12,12 @@ import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL, BUSINESS_EMAIL } from "@/lib/business-config";
 import { generateBreadcrumbSchema, generateItemListSchema, generateWebPageSchema } from "@/lib/schema";
 
-import { equipmentMockData } from "../data/equipment";
+import { visibleEquipment } from "../data/equipment";
 
 const PAGE_URL = `${BUSINESS_URL}/equipment`;
 const PAGE_DESCRIPTION =
   "Regenis Life's exclusive medical equipment portfolio — flagship devices across 5 capability areas, from hyperbaric oxygen chambers to aesthetic platforms and regenerative therapy systems, sourced from globally certified partners.";
-const FEATURED_ITEMS = equipmentMockData.slice(0, 6);
+const FEATURED_ITEMS = visibleEquipment.slice(0, 6);
 
 export const metadata: Metadata = {
   title: "Medical Equipment Showcase | Exclusive Partner Technologies",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     description: PAGE_DESCRIPTION,
     url: "/equipment",
     type: "website",
-    images: equipmentMockData[0] ? [{ url: equipmentMockData[0].image, alt: equipmentMockData[0].name }] : undefined,
+    images: visibleEquipment[0] ? [{ url: visibleEquipment[0].image, alt: visibleEquipment[0].name }] : undefined,
   },
   twitter: {
     card: "summary_large_image",
@@ -85,7 +85,7 @@ export default function EquipmentShowcasePage() {
         <WhyPartners />
 
         {/* CTA banner */}
-        <section className="px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,96px)] bg-[#141414] text-white border-t border-white/[0.08] text-center">
+        <section id="contact" className="px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,96px)] bg-[#141414] text-white border-t border-white/[0.08] text-center scroll-mt-32">
           <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#bbbbbb] leading-[1.3] mb-6">
             Ready to Equip Your Facility?
           </div>

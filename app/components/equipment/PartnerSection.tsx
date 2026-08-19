@@ -34,9 +34,9 @@ export default function PartnerSection({ equipments }: PartnerSectionProps) {
       }
     });
 
-    const cats = [{ name: "All Partners" }];
+    const cats: { name: string; logo?: string }[] = [{ name: "All Partners" }];
     uniquePartners.forEach((logo, name) => {
-      cats.push({ name, logo } as any);
+      cats.push({ name, logo });
     });
     return cats;
   }, [equipments]);

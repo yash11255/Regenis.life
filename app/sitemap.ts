@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { BUSINESS_URL } from "@/lib/business-config";
-import { equipmentMockData } from "./data/equipment";
+import { visibleEquipment } from "./data/equipment";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BUSINESS_URL}/equipment/all`, changeFrequency: "weekly", priority: 0.9 },
   ];
 
-  const equipmentRoutes: MetadataRoute.Sitemap = equipmentMockData.map((eq) => ({
+  const equipmentRoutes: MetadataRoute.Sitemap = visibleEquipment.map((eq) => ({
     url: `${BUSINESS_URL}/equipment/${eq.id}`,
     changeFrequency: "monthly",
     priority: 0.7,

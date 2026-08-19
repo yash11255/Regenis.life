@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import RegenisLogo from "./RegenisLogo";
 import { BUSINESS_EMAIL, BUSINESS_NAME } from "@/lib/business-config";
 
 const quickLinks = [
   { label: "Equipment", href: "/equipment" },
   { label: "Full Catalog", href: "/equipment/all" },
-  { label: "Featured Devices", href: "/equipment#showcase" },
-  { label: "Our Partners", href: "/equipment#showcase" },
+  { label: "Featured Devices", href: "/equipment#featured-devices" },
+  { label: "Our Partners", href: "/equipment#partners" },
 ];
 
 export default function Footer() {
@@ -162,7 +162,13 @@ export default function Footer() {
                 transition={{ duration: 0.5 }}
               >
                 <Link href="/equipment" style={{ textDecoration: "none" }}>
-                  <RegenisLogo theme="light" className="text-[17px]" />
+                  <Image
+                    src="/Regenis.png"
+                    alt="Regenis Life"
+                    width={1536}
+                    height={1024}
+                    className="h-16 w-[300px] object-cover object-center md:h-20 md:w-[380px]"
+                  />
                 </Link>
                 <p className="rgf-brand-desc">
                   Regenis Life curates a portfolio of clinically-precise, globally
@@ -217,10 +223,6 @@ export default function Footer() {
               <p className="rgf-copyright">
                 © {new Date().getFullYear()} <Link href="/equipment">{BUSINESS_NAME}</Link>. All rights reserved.
               </p>
-              <div className="rgf-bottom-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms & Conditions</a>
-              </div>
             </div>
 
           </div>

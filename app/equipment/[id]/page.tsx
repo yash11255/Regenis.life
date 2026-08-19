@@ -2,11 +2,12 @@ import React from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageShell from "../../components/PageShell";
-import { equipmentMockData } from "../../data/equipment";
+import { visibleEquipment } from "../../data/equipment";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronLeft, ArrowUpRight } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import EquipmentCarousel from "../../components/equipment/EquipmentCarousel";
+import EquipmentInquiryButton from "../../components/equipment/EquipmentInquiryButton";
 import { SchemaScript } from "../../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
 import { generateBreadcrumbSchema, type LDJsonSchema } from "@/lib/schema";
@@ -18,14 +19,14 @@ interface EquipmentDetailPageProps {
 }
 
 export function generateStaticParams() {
-  return equipmentMockData.map((equipment) => ({
+  return visibleEquipment.map((equipment) => ({
     id: equipment.id,
   }));
 }
 
 export async function generateMetadata({ params }: EquipmentDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const equipment = equipmentMockData.find((eq) => eq.id === id);
+  const equipment = visibleEquipment.find((eq) => eq.id === id);
 
   if (!equipment) {
     return {
@@ -64,7 +65,7 @@ export default async function EquipmentDetailPage({
   params,
 }: EquipmentDetailPageProps) {
   const resolvedParams = await params;
-  const equipment = equipmentMockData.find((eq) => eq.id === resolvedParams.id);
+  const equipment = visibleEquipment.find((eq) => eq.id === resolvedParams.id);
 
   if (!equipment) {
     notFound();
@@ -107,6 +108,14 @@ export default async function EquipmentDetailPage({
       url: BUSINESS_URL,
     },
   };
+  const portfolioDetails: Array<[string, string]> = [
+    ["Category", equipment.category || ""],
+    ["Manufacturer", equipment.manufacturer || equipment.partner],
+    ["Quantity", equipment.quantity ? String(equipment.quantity) : ""],
+    ["Site Location", equipment.siteLocation || ""],
+    ["Current Status", equipment.currentStatus || ""],
+    ["Benchmark Alternate", equipment.alternateOption || ""],
+  ].filter((detail): detail is [string, string] => Boolean(detail[1]));
 
   return (
     <PageShell headerVariant="solid">
@@ -257,14 +266,20 @@ export default async function EquipmentDetailPage({
             </div>
 
             {/* Partner logo */}
-            <div className="relative mb-10 self-start" style={{ width: 168, height: 42 }}>
-              <Image
-                src={equipment.logo}
-                alt={equipment.partner}
-                fill
-                sizes="168px"
-                className="object-contain object-left grayscale"
-              />
+            <div className="relative mb-10 self-start flex items-center" style={{ width: 168, height: 42 }}>
+              {equipment.logo ? (
+                <Image
+                  src={equipment.logo}
+                  alt={equipment.partner}
+                  fill
+                  sizes="168px"
+                  className="object-contain object-left grayscale"
+                />
+              ) : (
+                <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-[#262626]">
+                  {equipment.partner}
+                </span>
+              )}
             </div>
 
             {/* Name */}
@@ -296,6 +311,34 @@ export default async function EquipmentDetailPage({
             >
               {equipment.fullDescription || equipment.description}
             </p>
+
+            {/* Source portfolio details */}
+            {portfolioDetails.length > 0 && (
+              <div className="mb-10" style={{ maxWidth: 480 }}>
+                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#262626] mb-6 uppercase">
+                  Portfolio Details
+                </h3>
+                <div style={{ borderTop: "1px solid rgba(38,38,38,0.12)" }}>
+                  {portfolioDetails.map(([label, value]) => (
+                    <div key={label} className="spec-row">
+                      <span style={{ fontSize: 13, color: "#757575", flexShrink: 0 }}>
+                        {label}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#262626",
+                          textAlign: "right",
+                        }}
+                      >
+                        {value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Specifications */}
             {equipment.specifications && (
@@ -370,10 +413,7 @@ export default async function EquipmentDetailPage({
 
             {/* CTA */}
             <div className="mt-auto pt-8">
-              <Link href="/equipment/all" className="cta-btn">
-                Enquire Now
-                <ArrowUpRight size={16} />
-              </Link>
+              <EquipmentInquiryButton equipmentName={equipment.name} />
             </div>
           </div>
 

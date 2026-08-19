@@ -23,15 +23,24 @@ export const metadata: Metadata = {
     siteName: "Regenis Life",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/regenis-logo.svg" }],
+    images: [{ url: "/Regenis.png" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Regenis Life | Clinical & Wellness Equipment",
     description:
       "Globally certified medical and wellness equipment, precision-selected for clinical environments where outcomes define reputation.",
-    images: ["/regenis-logo.svg"],
+    images: ["/Regenis.png"],
   },
+  icons: {
+    icon: [
+      { url: "/favicon_io/favicon.ico" },
+      { url: "/favicon_io/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon_io/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/favicon_io/apple-touch-icon.png",
+  },
+  manifest: "/favicon_io/site.webmanifest",
 };
 
 export default function RootLayout({

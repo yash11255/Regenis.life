@@ -9,8 +9,8 @@
 
 export const BUSINESS_NAME = "Regenis Life";
 export const BUSINESS_URL = "https://regenis.life";
-export const BUSINESS_LOGO = `${BUSINESS_URL}/regenis-logo.svg`;
-export const BUSINESS_IMAGE = `${BUSINESS_URL}/regenis-logo.svg`;
+export const BUSINESS_LOGO = `${BUSINESS_URL}/Regenis.png`;
+export const BUSINESS_IMAGE = `${BUSINESS_URL}/Regenis.png`;
 
 // TODO: replace with real contact details before launch
 export const BUSINESS_EMAIL = ["hello@regenis.life"];

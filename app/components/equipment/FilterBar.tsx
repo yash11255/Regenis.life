@@ -21,9 +21,6 @@ export default function FilterBar({ categories, activeCategory, onSelect }: Filt
         {categories.map((category) => {
           const isActive = activeCategory === category.name;
 
-          // Skip rendering if there's no logo, or handle "All Partners" specifically
-          if (!category.logo && category.name !== "All Partners") return null;
-
           return (
             <button
               key={category.name}
@@ -42,7 +39,6 @@ export default function FilterBar({ categories, activeCategory, onSelect }: Filt
                       }`}
                   />
                 ) : (
-                  /* Fallback for "All Partners" text if no logo exists */
                   <span className={`text-[11px] font-bold tracking-[0.14em] uppercase ${isActive ? "text-[#262626]" : "text-[#aaaaaa]"
                     }`}>
                     {category.name}
