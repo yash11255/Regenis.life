@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface FilterBarProps {
   categories: { name: string; logo?: string }[];
@@ -15,7 +16,7 @@ export default function FilterBar({ categories, activeCategory, onSelect }: Filt
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-      className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-[#262626]/[0.08] overflow-x-auto scrollbar-hide"
+      className="sticky top-0 z-40 bg-[#071426]/90 backdrop-blur-xl border-b border-white/[0.10] overflow-x-auto scrollbar-hide"
     >
       <div className="flex items-center px-[clamp(24px,5vw,80px)] min-w-max gap-4">
         {categories.map((category) => {
@@ -29,17 +30,19 @@ export default function FilterBar({ categories, activeCategory, onSelect }: Filt
             >
               <div className="relative z-10 flex items-center justify-center">
                 {category.logo ? (
-                  <img
+                  <Image
                     src={category.logo}
                     alt={category.name}
+                    width={180}
+                    height={48}
                     /* BIG SIZE: h-10 (40px) or h-12 (48px) */
-                    className={`h-10 w-auto object-contain transition-all duration-500 ease-[0.22, 1, 0.36, 1] ${isActive
-                        ? 'grayscale-0 opacity-100 scale-110'
-                        : 'grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 scale-100'
+                    className={`h-10 w-auto rounded-md bg-[#dce8f5] px-2 py-1 object-contain transition-all duration-500 ease-[0.22, 1, 0.36, 1] ${isActive
+                        ? 'opacity-100 scale-110'
+                        : 'opacity-100 scale-100 group-hover:scale-105'
                       }`}
                   />
                 ) : (
-                  <span className={`text-[11px] font-bold tracking-[0.14em] uppercase ${isActive ? "text-[#262626]" : "text-[#aaaaaa]"
+                  <span className={`text-[11px] font-bold tracking-[0.14em] uppercase ${isActive ? "text-[#eef5ff]" : "text-[#8fa6bd]"
                     }`}>
                     {category.name}
                   </span>

@@ -98,7 +98,7 @@ export default function FeaturedShowcase({
   };
 
   return (
-    <section id="featured-devices" className="equipment-featured-showcase bg-[#141414] text-white antialiased overflow-hidden scroll-mt-32">
+    <section id="featured-devices" className="equipment-featured-showcase bg-[#050d18] text-white antialiased overflow-hidden scroll-mt-32">
       <style dangerouslySetInnerHTML={{
         __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
@@ -108,7 +108,11 @@ export default function FeaturedShowcase({
           display: flex;
           gap: 20px;
           overflow-x: auto;
+          overflow-y: hidden;
           scroll-snap-type: x mandatory;
+          scroll-snap-stop: always;
+          touch-action: pan-x;
+          overscroll-behavior-x: contain;
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
           padding: 2px 2px 8px;
@@ -182,7 +186,7 @@ export default function FeaturedShowcase({
           <div className="flex items-center gap-6 flex-wrap">
             <Link
               href={ctaHref}
-              className="hidden sm:inline-flex items-center gap-[6px] text-[11px] font-bold tracking-[0.13em] uppercase text-white no-underline border-b border-white pb-[2px] transition-colors duration-200 rounded-none hover:text-[#1c69d4] hover:border-[#1c69d4]"
+              className="site-action-secondary hidden sm:inline-flex"
             >
               {ctaLabel}
               <ArrowUpRight size={12} />
@@ -276,7 +280,7 @@ export default function FeaturedShowcase({
         <div className="mt-10 flex justify-center sm:hidden">
           <Link
             href={ctaHref}
-            className="inline-flex items-center gap-[10px] px-8 py-[15px] bg-transparent text-white text-base font-bold leading-[1.2] no-underline border-b border-white transition-colors duration-200 cursor-pointer rounded-none hover:bg-white hover:text-[#262626]"
+            className="site-action-primary"
           >
             {ctaLabel}
             <ArrowUpRight size={16} strokeWidth={2} />

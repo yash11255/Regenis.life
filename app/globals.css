@@ -3,12 +3,23 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --regenis-950: #050d18;
+    --regenis-900: #071426;
+    --regenis-800: #0c1e33;
+    --regenis-700: #112b47;
+    --regenis-ink: #eef5ff;
+    --regenis-muted: #a8b8ca;
+    --regenis-accent: #3d8cff;
+  }
+
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    background: #ffffff;
+    background: var(--regenis-900);
+    color: var(--regenis-ink);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
@@ -18,13 +29,13 @@
   }
 
   :focus-visible {
-    outline: 2px solid #1c69d4;
+    outline: 2px solid var(--regenis-accent);
     outline-offset: 3px;
   }
 
   ::selection {
-    background: rgba(28, 105, 212, 0.18);
-    color: #141414;
+    background: rgba(61, 140, 255, 0.28);
+    color: var(--regenis-ink);
   }
 }
 
@@ -48,6 +59,60 @@
 body.mobile-menu-open,
 body.ui-overlay-open {
   overflow: hidden;
+}
+
+.site-action-primary,
+.site-action-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.site-action-primary {
+  gap: 10px;
+  padding: 15px 32px;
+  background: transparent;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  border: 1px solid transparent;
+  border-bottom-color: #fff;
+}
+
+.site-action-primary:hover {
+  background: var(--regenis-ink);
+  color: var(--regenis-900);
+  border-color: var(--regenis-ink);
+}
+
+.site-action-secondary {
+  gap: 8px;
+  padding-bottom: 2px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.site-action-secondary:hover {
+  color: var(--regenis-accent);
+  border-bottom-color: var(--regenis-accent);
+}
+
+.site-action-secondary--dark {
+  color: var(--regenis-ink);
+  border-bottom-color: rgba(238, 245, 255, 0.4);
+}
+
+.site-action-secondary--dark:hover {
+  color: var(--regenis-accent);
+  border-bottom-color: var(--regenis-accent);
 }
 
 .route-transition {

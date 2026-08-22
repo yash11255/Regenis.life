@@ -19,10 +19,14 @@ export interface Equipment {
 
 interface PartnerSectionProps {
   equipments: Equipment[];
+  initialCategory?: string;
 }
 
-export default function PartnerSection({ equipments }: PartnerSectionProps) {
-  const [activeCategory, setActiveCategory] = useState("All Partners");
+export default function PartnerSection({ equipments, initialCategory }: PartnerSectionProps) {
+  const initialActiveCategory = initialCategory && equipments.some((eq) => eq.partner === initialCategory)
+    ? initialCategory
+    : "All Partners";
+  const [activeCategory, setActiveCategory] = useState(initialActiveCategory);
   const [inquiryModalOpen, setInquiryModalOpen] = useState(false);
   const [selectedEquipment, setSelectedEquipment] = useState<string | undefined>();
 
@@ -52,7 +56,7 @@ export default function PartnerSection({ equipments }: PartnerSectionProps) {
   };
 
   return (
-    <section id="showcase" className="bg-white text-[#262626] font-sans antialiased min-h-[60vh]">
+    <section id="showcase" className="bg-[#0b1b2f] text-[#eef5ff] font-sans antialiased min-h-[60vh]">
       <FilterBar
         categories={categories}
         activeCategory={activeCategory}
@@ -77,7 +81,7 @@ export default function PartnerSection({ equipments }: PartnerSectionProps) {
           />
         ))}
         {filteredEquipment.length === 0 && (
-          <div className="py-32 text-center text-[#757575] font-light text-lg">
+            <div className="py-32 text-center text-[#a8b8ca] font-light text-lg">
             No equipment found for this selection.
           </div>
         )}

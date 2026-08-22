@@ -10,7 +10,13 @@ import EquipmentCarousel from "../../components/equipment/EquipmentCarousel";
 import EquipmentInquiryButton from "../../components/equipment/EquipmentInquiryButton";
 import { SchemaScript } from "../../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
-import { generateBreadcrumbSchema, type LDJsonSchema } from "@/lib/schema";
+import {
+  generateBreadcrumbSchema,
+  generateMedicalDeviceSchema,
+  generateProductSchema,
+  generateWebPageSchema,
+} from "@/lib/schema";
+import { SEO_LAST_MODIFIED } from "@/lib/seo-content";
 
 interface EquipmentDetailPageProps {
   params: Promise<{
@@ -35,7 +41,8 @@ export async function generateMetadata({ params }: EquipmentDetailPageProps): Pr
     };
   }
 
-  const title = `${equipment.name} | ${equipment.partner} — ${equipment.tagline}`;
+  const title = equipment.name;
+  const socialTitle = `${equipment.name} | ${equipment.partner}`;
   const description = equipment.description;
   const canonicalUrl = `${BUSINESS_URL}/equipment/${equipment.id}`;
 
@@ -46,7 +53,7 @@ export async function generateMetadata({ params }: EquipmentDetailPageProps): Pr
       canonical: `/equipment/${equipment.id}`,
     },
     openGraph: {
-      title,
+      title: socialTitle,
       description,
       url: canonicalUrl,
       type: "website",
@@ -54,7 +61,7 @@ export async function generateMetadata({ params }: EquipmentDetailPageProps): Pr
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description,
       images: [equipment.image],
     },
@@ -78,36 +85,45 @@ export default async function EquipmentDetailPage({
     { label: "All Equipment", url: `${BUSINESS_URL}/equipment/all` },
     { label: equipment.name, url: canonicalUrl },
   ]);
-  const productSchema: LDJsonSchema = {
-    "@context": "https://schema.org",
-    "@type": "MedicalDevice",
+  const productSchema = generateMedicalDeviceSchema({
     name: equipment.name,
     description: equipment.fullDescription || equipment.description,
     url: canonicalUrl,
-    image: equipment.images?.length ? equipment.images : [equipment.image],
-    manufacturer: {
-      "@type": "Organization",
-      name: equipment.partner,
-    },
-    ...(equipment.specifications?.length
-      ? {
-          additionalProperty: equipment.specifications.map((spec) => ({
-            "@type": "PropertyValue",
-            name: spec.label,
-            value: spec.value,
-          })),
-        }
-      : {}),
-    brand: {
-      "@type": "Brand",
-      name: equipment.partner,
-    },
-    seller: {
-      "@type": "Organization",
-      name: BUSINESS_NAME,
-      url: BUSINESS_URL,
-    },
-  };
+    image: (equipment.images?.length ? equipment.images : [equipment.image]).map((image) =>
+      image.startsWith("http") ? image : `${BUSINESS_URL}${image}`
+    ),
+    manufacturer: equipment.manufacturer || equipment.partner,
+    brand: equipment.partner,
+    seller: { name: BUSINESS_NAME, url: BUSINESS_URL },
+    category: equipment.category,
+    additionalProperty: equipment.specifications,
+    relatedDeviceName: equipment.alternateOption,
+  });
+  const productRichResultSchema = generateProductSchema({
+    name: equipment.name,
+    description: equipment.fullDescription || equipment.description,
+    url: canonicalUrl,
+    image: (equipment.images?.length ? equipment.images : [equipment.image]).map((image) =>
+      image.startsWith("http") ? image : `${BUSINESS_URL}${image}`
+    ),
+    manufacturer: equipment.manufacturer || equipment.partner,
+    brand: equipment.partner,
+    seller: { name: BUSINESS_NAME, url: BUSINESS_URL },
+    category: equipment.category,
+    additionalProperty: equipment.specifications,
+    relatedDeviceUrl: `${canonicalUrl}#medical-device`,
+  });
+  const detailPageSchema = generateWebPageSchema({
+    name: `${equipment.name} | Regenis Life`,
+    url: canonicalUrl,
+    description: equipment.description,
+    pageType: "MedicalWebPage",
+    isPartOf: { name: BUSINESS_NAME, url: BUSINESS_URL },
+    dateModified: SEO_LAST_MODIFIED,
+    about: { "@id": `${canonicalUrl}#medical-device` },
+    mainEntity: { "@id": `${canonicalUrl}#medical-device` },
+    speakable: ["h1", ".equipment-detail-summary"],
+  });
   const portfolioDetails: Array<[string, string]> = [
     ["Category", equipment.category || ""],
     ["Manufacturer", equipment.manufacturer || equipment.partner],
@@ -119,8 +135,11 @@ export default async function EquipmentDetailPage({
 
   return (
     <PageShell headerVariant="solid">
-      <main className="font-sans antialiased bg-white text-[#262626] min-h-screen">
-        <SchemaScript id="equipment-detail-schema" schema={[breadcrumbSchema, productSchema]} />
+      <main className="font-sans antialiased bg-[#071426] text-[#eef5ff] min-h-screen">
+        <SchemaScript
+          id="equipment-detail-schema"
+          schema={[detailPageSchema, breadcrumbSchema, productSchema, productRichResultSchema]}
+        />
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -153,17 +172,17 @@ export default async function EquipmentDetailPage({
               font-weight: 700;
               letter-spacing: 0.1em;
               text-transform: uppercase;
-              color: #757575;
+              color: #a8b8ca;
               text-decoration: none;
               transition: color 0.2s;
             }
-            .back-link:hover { color: #1c69d4; }
+            .back-link:hover { color: #3d8cff; }
 
             /* ── Section layout ── */
             .detail-grid {
               display: grid;
               grid-template-columns: 1fr;
-              border-top: 1px solid rgba(38, 38, 38, 0.12);
+              border-top: 1px solid rgba(255, 255, 255, 0.12);
             }
             @media (min-width: 1024px) {
               .detail-grid {
@@ -175,12 +194,12 @@ export default async function EquipmentDetailPage({
             /* ── Text panel ── */
             .detail-text {
               padding: clamp(40px, 7vw, 80px) clamp(24px, 6vw, 64px);
-              border-bottom: 1px solid rgba(38, 38, 38, 0.12);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             }
             @media (min-width: 1024px) {
               .detail-text {
                 border-bottom: none;
-                border-right: 1px solid rgba(38, 38, 38, 0.12);
+                border-right: 1px solid rgba(255, 255, 255, 0.12);
               }
             }
 
@@ -190,7 +209,7 @@ export default async function EquipmentDetailPage({
               flex-direction: column;
               gap: 4px;
               padding: 14px 0;
-              border-bottom: 1px solid rgba(38, 38, 38, 0.10);
+              border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             }
             @media (min-width: 480px) {
               .spec-row {
@@ -219,7 +238,7 @@ export default async function EquipmentDetailPage({
               align-items: center;
               gap: 12px;
               padding: 16px 32px;
-              background: #262626;
+              background: #3d8cff;
               color: #fff;
               font-size: 12px;
               font-weight: 700;
@@ -229,7 +248,7 @@ export default async function EquipmentDetailPage({
               transition: background 0.25s, box-shadow 0.25s;
             }
             .cta-btn:hover {
-              background: #1c69d4;
+              background: #2f78e3;
               box-shadow: 0 12px 32px rgba(28, 105, 212, 0.25);
             }
           `,
@@ -252,7 +271,7 @@ export default async function EquipmentDetailPage({
 
             {/* ID + tagline */}
             <div className="flex items-center gap-4 mb-8 flex-wrap">
-              <span className="text-[10px] font-bold tracking-[0.1em] text-[#bbbbbb]">
+              <span className="text-[10px] font-bold tracking-[0.1em] text-[#8fa6bd]">
                 {equipment.id}
               </span>
               <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#1c69d4]">
@@ -266,17 +285,17 @@ export default async function EquipmentDetailPage({
             </div>
 
             {/* Partner logo */}
-            <div className="relative mb-10 self-start flex items-center" style={{ width: 168, height: 42 }}>
+            <div className="relative mb-10 self-start flex items-center rounded-md bg-[#dce8f5] px-3 py-2" style={{ width: 168, height: 42 }}>
               {equipment.logo ? (
                 <Image
                   src={equipment.logo}
                   alt={equipment.partner}
                   fill
                   sizes="168px"
-                  className="object-contain object-left grayscale"
+                  className="object-contain object-left"
                 />
               ) : (
-                <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-[#262626]">
+                <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-[#eef5ff]">
                   {equipment.partner}
                 </span>
               )}
@@ -291,7 +310,7 @@ export default async function EquipmentDetailPage({
                 lineHeight: 1.1,
                 textTransform: "uppercase",
                 letterSpacing: "0.01em",
-                color: "#262626",
+                color: "#eef5ff",
                 marginBottom: 32,
               }}
             >
@@ -300,10 +319,11 @@ export default async function EquipmentDetailPage({
 
             {/* Description */}
             <p
+              className="equipment-detail-summary"
               style={{
                 fontSize: "clamp(14px, 1.4vw, 16px)",
                 lineHeight: 1.8,
-                color: "#757575",
+                color: "#a8b8ca",
                 fontWeight: 300,
                 maxWidth: 480,
                 marginBottom: 48,
@@ -315,20 +335,20 @@ export default async function EquipmentDetailPage({
             {/* Source portfolio details */}
             {portfolioDetails.length > 0 && (
               <div className="mb-10" style={{ maxWidth: 480 }}>
-                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#262626] mb-6 uppercase">
+                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#eef5ff] mb-6 uppercase">
                   Portfolio Details
                 </h3>
-                <div style={{ borderTop: "1px solid rgba(38,38,38,0.12)" }}>
+                <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}>
                   {portfolioDetails.map(([label, value]) => (
                     <div key={label} className="spec-row">
-                      <span style={{ fontSize: 13, color: "#757575", flexShrink: 0 }}>
+                      <span style={{ fontSize: 13, color: "#a8b8ca", flexShrink: 0 }}>
                         {label}
                       </span>
                       <span
                         style={{
                           fontSize: 14,
                           fontWeight: 600,
-                          color: "#262626",
+                          color: "#eef5ff",
                           textAlign: "right",
                         }}
                       >
@@ -343,20 +363,20 @@ export default async function EquipmentDetailPage({
             {/* Specifications */}
             {equipment.specifications && (
               <div className="mb-10" style={{ maxWidth: 480 }}>
-                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#262626] mb-6 uppercase">
+                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#eef5ff] mb-6 uppercase">
                   Technical Specifications
                 </h3>
-                <div style={{ borderTop: "1px solid rgba(38,38,38,0.12)" }}>
+                <div style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}>
                   {equipment.specifications.map((spec, i) => (
                     <div key={i} className="spec-row">
-                      <span style={{ fontSize: 13, color: "#757575", flexShrink: 0 }}>
+                      <span style={{ fontSize: 13, color: "#a8b8ca", flexShrink: 0 }}>
                         {spec.label}
                       </span>
                       <span
                         style={{
                           fontSize: 14,
                           fontWeight: 600,
-                          color: "#262626",
+                          color: "#eef5ff",
                         }}
                       >
                         {spec.value}
@@ -370,7 +390,7 @@ export default async function EquipmentDetailPage({
             {/* Features */}
             {equipment.features && (
               <div className="mb-12" style={{ maxWidth: 480 }}>
-                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#262626] mb-6 uppercase">
+                <h3 className="text-[11px] font-bold tracking-[0.1em] text-[#eef5ff] mb-6 uppercase">
                   Key Features
                 </h3>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -399,7 +419,7 @@ export default async function EquipmentDetailPage({
                         style={{
                           fontSize: 15,
                           lineHeight: 1.65,
-                          color: "#757575",
+                          color: "#a8b8ca",
                           fontWeight: 300,
                         }}
                       >
@@ -448,7 +468,7 @@ export default async function EquipmentDetailPage({
         <section
           style={{
             padding: "clamp(48px,6vw,80px) clamp(24px,6vw,88px)",
-            background: "#141414",
+            background: "#050d18",
             borderTop: "1px solid rgba(255,255,255,0.08)",
             textAlign: "center",
           }}
@@ -459,7 +479,7 @@ export default async function EquipmentDetailPage({
               fontWeight: 400,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "#bbbbbb",
+              color: "#8fa6bd",
             }}
           >
             Regenis Life © {new Date().getFullYear()}

@@ -12,12 +12,11 @@ export const BUSINESS_URL = "https://regenis.life";
 export const BUSINESS_LOGO = `${BUSINESS_URL}/Regenis.png`;
 export const BUSINESS_IMAGE = `${BUSINESS_URL}/Regenis.png`;
 
-// TODO: replace with real contact details before launch
 export const BUSINESS_EMAIL = ["hello@regenis.life"];
-export const BUSINESS_PHONE = ["+91-00000-00000"];
+export const BUSINESS_PHONE: string[] = [];
 
 export const BUSINESS_DESCRIPTION =
-  "Regenis Life curates a portfolio of clinically-precise, globally certified medical and wellness equipment — from hyperbaric oxygen chambers to aesthetic platforms and regenerative therapy systems — for clinics and facilities that demand outcomes.";
+  "Regenis Life curates medical and wellness equipment for clinical facilities, including hyperbaric chambers, aesthetic platforms, rehabilitation systems, diagnostics, recovery technologies, and robotics.";
 
 // TODO: replace with real social handles once created
 export const BUSINESS_SOCIAL_LINKS: string[] = [];

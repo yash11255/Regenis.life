@@ -55,7 +55,7 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
         <div className="fixed inset-0 z-[9999] flex items-stretch justify-end font-inter overflow-hidden">
           {/* Backdrop blur overlay */}
           <motion.div 
-            className="absolute inset-0 bg-[#141414]/30 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#050d18]/65 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -65,22 +65,22 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
           
           {/* Modal Panel */}
           <motion.div 
-            className="relative z-10 w-full max-w-[500px] h-screen bg-white flex flex-col border-l border-[#262626]/[0.12] shadow-2xl overflow-hidden"
+            className="relative z-10 w-full max-w-[500px] h-screen bg-[#0b1b2f] text-[#eef5ff] flex flex-col border-l border-white/[0.12] shadow-2xl overflow-hidden"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#262626]/[0.12]">
-              <div className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#262626]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.12]">
+              <div className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#eef5ff]">
                 {isSubmitted ? "Inquiry Confirmed" : "Initiate Inquiry"}
               </div>
               <button 
                 onClick={handleClose} 
-                className="p-2 transition-colors hover:bg-[#262626]/5 rounded-none"
+                className="p-2 transition-colors hover:bg-white/10 rounded-none"
               >
-                <X size={20} className="text-[#262626]" />
+                <X size={20} className="text-[#eef5ff]" />
               </button>
             </div>
             
@@ -96,16 +96,16 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
                   <div className="w-16 h-16 rounded-full bg-[#1c69d4]/10 border border-[#1c69d4]/20 flex items-center justify-center mb-6">
                     <Check size={28} className="text-[#1c69d4]" />
                   </div>
-                  <h3 className="text-xl font-medium text-[#262626] uppercase tracking-wide mb-3">
+                  <h3 className="text-xl font-medium text-[#eef5ff] uppercase tracking-wide mb-3">
                     Inquiry Received
                   </h3>
-                  <p className="text-sm text-[#757575] leading-relaxed max-w-sm">
-                    Thank you, <span className="font-semibold text-[#262626]">{fullName}</span>. A Regenis Life representative will reach out to you within the next 2 hours with clinical data, pricing, and availability details for <span className="font-semibold text-[#1c69d4]">{equipmentName || "your selected product"}</span>.
+                  <p className="text-sm text-[#a8b8ca] leading-relaxed max-w-sm">
+                    Thank you, <span className="font-semibold text-[#eef5ff]">{fullName}</span>. A Regenis Life representative will reach out to you within the next 2 hours with clinical data, pricing, and availability details for <span className="font-semibold text-[#3d8cff]">{equipmentName || "your selected product"}</span>.
                   </p>
                   
                   <button
                     onClick={handleClose}
-                    className="mt-8 px-8 py-3 border border-[#262626] hover:bg-[#262626] hover:text-white transition-colors text-[11px] font-bold tracking-widest uppercase"
+                    className="mt-8 px-8 py-3 border border-white/30 hover:bg-[#3d8cff] hover:text-white transition-colors text-[11px] font-bold tracking-widest uppercase"
                   >
                     Close Window
                   </button>
@@ -122,11 +122,11 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
                   {/* Body */}
                   <div className="px-6 py-4 flex-1 overflow-y-auto min-h-0">
                     {equipmentName && (
-                      <div className="mb-4 p-4 bg-[#f8f8f8] border border-[#262626]/[0.08]">
-                        <div className="text-[10px] text-[#757575] font-bold uppercase tracking-[0.1em] mb-1">
+                      <div className="mb-4 p-4 bg-[#112b47] border border-white/[0.10]">
+                        <div className="text-[10px] text-[#8fa6bd] font-bold uppercase tracking-[0.1em] mb-1">
                           Selected Product
                         </div>
-                        <div className="text-xl font-light text-[#262626] uppercase">
+                        <div className="text-xl font-light text-[#eef5ff] uppercase">
                           {equipmentName}
                         </div>
                       </div>
@@ -134,48 +134,48 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
                     
                     <div className="flex flex-col gap-5">
                       <div>
-                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#757575] mb-1.5 uppercase">Full Name *</label>
+                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#8fa6bd] mb-1.5 uppercase">Full Name *</label>
                         <input 
                           type="text" 
                           required
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          className="w-full bg-transparent border-b border-[#262626]/20 py-2 text-[14px] text-[#262626] placeholder-[#bbbbbb] focus:outline-none focus:border-[#1c69d4] transition-colors rounded-none" 
+                          className="w-full bg-transparent border-b border-white/20 py-2 text-[14px] text-[#eef5ff] placeholder-[#8fa6bd] focus:outline-none focus:border-[#3d8cff] transition-colors rounded-none"
                           placeholder="Dr. John Doe" 
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#757575] mb-1.5 uppercase">Email Address *</label>
+                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#8fa6bd] mb-1.5 uppercase">Email Address *</label>
                         <input 
                           type="email" 
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full bg-transparent border-b border-[#262626]/20 py-2 text-[14px] text-[#262626] placeholder-[#bbbbbb] focus:outline-none focus:border-[#1c69d4] transition-colors rounded-none" 
+                          className="w-full bg-transparent border-b border-white/20 py-2 text-[14px] text-[#eef5ff] placeholder-[#8fa6bd] focus:outline-none focus:border-[#3d8cff] transition-colors rounded-none"
                           placeholder="john@clinic.com" 
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#757575] mb-1.5 uppercase">Phone Number *</label>
+                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#8fa6bd] mb-1.5 uppercase">Phone Number *</label>
                         <input 
                           type="tel" 
                           required
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          className="w-full bg-transparent border-b border-[#262626]/20 py-2 text-[14px] text-[#262626] placeholder-[#bbbbbb] focus:outline-none focus:border-[#1c69d4] transition-colors rounded-none" 
+                          className="w-full bg-transparent border-b border-white/20 py-2 text-[14px] text-[#eef5ff] placeholder-[#8fa6bd] focus:outline-none focus:border-[#3d8cff] transition-colors rounded-none"
                           placeholder="+91..." 
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#757575] mb-1.5 uppercase">Message</label>
+                        <label className="block text-[10px] font-bold tracking-[0.1em] text-[#8fa6bd] mb-1.5 uppercase">Message</label>
                         <textarea 
                           rows={2} 
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
-                          className="w-full bg-[#f8f8f8] border border-[#262626]/10 p-3 text-[14px] text-[#262626] placeholder-[#bbbbbb] focus:outline-none focus:border-[#1c69d4] transition-colors resize-none rounded-none" 
+                          className="w-full bg-[#071426] border border-white/10 p-3 text-[14px] text-[#eef5ff] placeholder-[#8fa6bd] focus:outline-none focus:border-[#3d8cff] transition-colors resize-none rounded-none"
                           placeholder="I would like to receive clinical data and pricing..." 
                         />
                       </div>
@@ -183,11 +183,11 @@ export default function InquiryModal({ isOpen, onClose, equipmentName }: Inquiry
                   </div>
                   
                   {/* Footer */}
-                  <div className="px-6 py-4 border-t border-[#262626]/[0.12] bg-[#f8f8f8]">
+                  <div className="px-6 py-4 border-t border-white/[0.12] bg-[#071426]">
                     <button 
                       type="submit" 
                       disabled={isSubmitting}
-                      className="w-full py-3 bg-[#262626] text-white text-[12px] font-bold tracking-[0.14em] uppercase hover:bg-[#1c69d4] transition-colors rounded-none border-none shadow-[0_4px_14px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(28,105,212,0.23)] flex items-center justify-center gap-2 disabled:bg-[#757575]"
+                      className="w-full py-3 bg-[#3d8cff] text-white text-[12px] font-bold tracking-[0.14em] uppercase hover:bg-[#2f78e3] transition-colors rounded-none border-none shadow-[0_4px_14px_rgba(0,0,0,0.24)] hover:shadow-[0_6px_20px_rgba(61,140,255,0.28)] flex items-center justify-center gap-2 disabled:bg-[#48627d]"
                     >
                       {isSubmitting ? (
                         <>

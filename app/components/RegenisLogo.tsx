@@ -19,9 +19,9 @@ export default function RegenisLogo({
   theme = "dark",
   className = "",
 }: RegenisLogoProps) {
-  const ink = theme === "light" ? "#ffffff" : "#141414";
-  const accent = "#1c69d4";
-  const border = theme === "light" ? "rgba(255,255,255,0.35)" : "rgba(20,20,20,0.35)";
+  const ink = theme === "light" ? "#eef5ff" : "#071426";
+  const accent = "#3d8cff";
+  const border = theme === "light" ? "rgba(238,245,255,0.35)" : "rgba(7,20,38,0.35)";
 
   const Monogram = (
     <span

@@ -5,22 +5,24 @@ import Hero from "../components/equipment/Hero";
 import CategoryOverview from "../components/equipment/CategoryOverview";
 import WhyPartners from "../components/equipment/WhyPartners";
 import FeaturedShowcase from "../components/equipment/FeaturedShowcase";
+import FAQSection from "../components/home/FAQSection";
 import PartnerBrandsSection from "../components/home/PartnerBrandsSection";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL, BUSINESS_EMAIL } from "@/lib/business-config";
-import { generateBreadcrumbSchema, generateItemListSchema, generateWebPageSchema } from "@/lib/schema";
+import { generateBreadcrumbSchema, generateFAQSchema, generateItemListSchema, generateWebPageSchema } from "@/lib/schema";
+import { getEquipmentFaqs, SEO_LAST_MODIFIED } from "@/lib/seo-content";
 
 import { visibleEquipment } from "../data/equipment";
 
 const PAGE_URL = `${BUSINESS_URL}/equipment`;
 const PAGE_DESCRIPTION =
-  "Regenis Life's exclusive medical equipment portfolio — flagship devices across 5 capability areas, from hyperbaric oxygen chambers to aesthetic platforms and regenerative therapy systems, sourced from globally certified partners.";
+  "Explore Regenis Life's medical and wellness equipment portfolio: hyperbaric, aesthetic, rehabilitation, diagnostics, recovery, and robotics systems for professional facilities.";
 const FEATURED_ITEMS = visibleEquipment.slice(0, 6);
 
 export const metadata: Metadata = {
-  title: "Medical Equipment Showcase | Exclusive Partner Technologies",
+  title: "Medical & Wellness Equipment",
   description: PAGE_DESCRIPTION,
   alternates: {
     canonical: "/equipment",
@@ -41,11 +43,18 @@ export const metadata: Metadata = {
 
 export default function EquipmentShowcasePage() {
   const collectionSchema = generateWebPageSchema({
-    name: "Medical Equipment Showcase",
+    name: "Medical & Wellness Equipment | Regenis Life",
     url: PAGE_URL,
     description: PAGE_DESCRIPTION,
     pageType: "CollectionPage",
     isPartOf: { name: BUSINESS_NAME, url: BUSINESS_URL },
+    mainEntity: { "@id": `${PAGE_URL}#featured-equipment` },
+    dateModified: SEO_LAST_MODIFIED,
+    about: {
+      "@type": "Thing",
+      name: "Medical and wellness equipment for professional facilities",
+    },
+    speakable: ["h1", ".equipment-page-summary"],
   });
   const breadcrumbSchema = generateBreadcrumbSchema([
     { label: "Home", url: BUSINESS_URL },
@@ -54,17 +63,23 @@ export default function EquipmentShowcasePage() {
   const itemListSchema = generateItemListSchema(
     "Regenis Life Featured Equipment",
     FEATURED_ITEMS.map((eq) => ({
-      name: `${eq.partner} - ${eq.name}`,
+      name: eq.name,
       url: `${BUSINESS_URL}/equipment/${eq.id}`,
       description: eq.description,
-      image: eq.image,
-    }))
+      image: `${BUSINESS_URL}${eq.image}`,
+      itemType: ["Product", "MedicalDevice"],
+      brand: eq.partner,
+      manufacturer: eq.manufacturer || eq.partner,
+      category: eq.category,
+    })),
+    `${PAGE_URL}#featured-equipment`
   );
+  const faqSchema = generateFAQSchema(getEquipmentFaqs(visibleEquipment.length));
 
   return (
     <PageShell headerVariant="transparent">
-      <main className="font-sans antialiased overflow-hidden bg-[#141414]">
-        <SchemaScript id="equipment-list-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema]} />
+      <main className="font-sans antialiased overflow-hidden bg-[#071426]">
+        <SchemaScript id="equipment-list-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema, faqSchema]} />
         <style dangerouslySetInnerHTML={{
           __html: `
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
@@ -83,9 +98,10 @@ export default function EquipmentShowcasePage() {
           ctaLabel="View Full Catalog"
         />
         <WhyPartners />
+        <FAQSection />
 
         {/* CTA banner */}
-        <section id="contact" className="px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,96px)] bg-[#141414] text-white border-t border-white/[0.08] text-center scroll-mt-32">
+        <section id="contact" className="px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,96px)] bg-[#050d18] text-white border-t border-white/[0.08] text-center scroll-mt-32">
           <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#bbbbbb] leading-[1.3] mb-6">
             Ready to Equip Your Facility?
           </div>
@@ -95,14 +111,14 @@ export default function EquipmentShowcasePage() {
           <div className="flex gap-5 flex-wrap items-center justify-center">
             <a
               href={`mailto:${BUSINESS_EMAIL[0]}`}
-              className="inline-flex items-center gap-[10px] px-8 py-[15px] bg-transparent text-white text-base font-bold leading-[1.2] no-underline border-b border-white transition-colors duration-200 cursor-pointer rounded-none hover:bg-white hover:text-[#262626]"
+              className="site-action-secondary"
             >
               Enquire Now
               <ArrowUpRight size={16} strokeWidth={2} />
             </a>
             <Link
               href="/equipment/all"
-              className="inline-flex items-center gap-[6px] text-[11px] font-bold tracking-[0.13em] uppercase text-[#bbbbbb] no-underline border-b border-white/30 pb-[2px] transition-colors duration-200 rounded-none hover:text-[#1c69d4] hover:border-[#1c69d4]"
+              className="site-action-secondary"
             >
               View Full Catalog
               <ArrowUpRight size={12} />
@@ -111,7 +127,7 @@ export default function EquipmentShowcasePage() {
         </section>
 
         {/* Footer */}
-        <section className="px-[clamp(36px,6vw,88px)] py-[clamp(64px,8vw,112px)] bg-[#141414] text-white border-t border-white/[0.08] text-center">
+        <section className="px-[clamp(36px,6vw,88px)] py-[clamp(64px,8vw,112px)] bg-[#050d18] text-white border-t border-white/[0.08] text-center">
           <div className="text-[11px] font-normal tracking-[0.2em] uppercase text-[#bbbbbb] leading-[1.3]">
             Regenis Life © {new Date().getFullYear()}
           </div>

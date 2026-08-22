@@ -46,7 +46,7 @@ export default function EquipmentCarousel({ images, alt }: EquipmentCarouselProp
   // If there's only 1 image, just render it simply
   if (images.length === 1) {
     return (
-      <div className="relative w-full h-full min-h-[400px] lg:min-h-[520px] bg-[#141414]">
+      <div className="relative w-full h-full min-h-[400px] lg:min-h-[520px] bg-[#071426]">
         <Image
           src={images[0]}
           alt={alt}
@@ -76,7 +76,7 @@ export default function EquipmentCarousel({ images, alt }: EquipmentCarouselProp
   };
 
   return (
-    <div className="relative w-full h-full min-h-[480px] lg:min-h-[580px] bg-[#141414] overflow-hidden group select-none flex flex-col">
+    <div className="relative w-full h-full min-h-[480px] lg:min-h-[580px] bg-[#071426] overflow-hidden group select-none flex flex-col">
       {/* Main Slide view */}
       <div className="relative flex-1 w-full min-h-[400px] lg:min-h-[480px] overflow-hidden">
         <AnimatePresence initial={false} custom={direction}>
@@ -143,7 +143,7 @@ export default function EquipmentCarousel({ images, alt }: EquipmentCarouselProp
       </div>
 
       {/* Premium Thumbnail bar */}
-      <div className="bg-[#141414] border-t border-white/[0.08] px-4 py-3 flex justify-start gap-3 overflow-x-auto scrollbar-none min-h-[76px]">
+      <div className="bg-[#071426] border-t border-white/[0.08] px-4 py-3 flex justify-start gap-3 overflow-x-auto scrollbar-none min-h-[76px]">
         {images.map((img, idx) => (
           <button
             key={idx}

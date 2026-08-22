@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SchemaScript } from "./components/SchemaScript";
 import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/schema";
-import { businessConfig, BUSINESS_SOCIAL_LINKS } from "@/lib/business-config";
+import { businessConfig, BUSINESS_DESCRIPTION, BUSINESS_SOCIAL_LINKS } from "@/lib/business-config";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,15 +10,25 @@ export const metadata: Metadata = {
     default: "Regenis Life | Clinical & Wellness Equipment",
     template: "%s | Regenis Life",
   },
-  description:
-    "Regenis Life curates a portfolio of clinically-precise, globally certified medical and wellness equipment — hyperbaric chambers, aesthetic platforms, and regenerative therapy systems — for facilities that demand outcomes.",
+  description: BUSINESS_DESCRIPTION,
+  applicationName: "Regenis Life",
+  authors: [{ name: "Regenis Life" }],
+  creator: "Regenis Life",
+  publisher: "Regenis Life",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Regenis Life | Clinical & Wellness Equipment",
-    description:
-      "Globally certified medical and wellness equipment, precision-selected for clinical environments where outcomes define reputation.",
+    description: BUSINESS_DESCRIPTION,
     url: "/",
     siteName: "Regenis Life",
     locale: "en_US",
@@ -28,8 +38,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Regenis Life | Clinical & Wellness Equipment",
-    description:
-      "Globally certified medical and wellness equipment, precision-selected for clinical environments where outcomes define reputation.",
+    description: BUSINESS_DESCRIPTION,
     images: ["/Regenis.png"],
   },
   icons: {
@@ -57,6 +66,14 @@ export default function RootLayout({
     telephone: businessConfig.phone,
     email: businessConfig.email,
     sameAs: BUSINESS_SOCIAL_LINKS,
+    knowsAbout: [
+      "Medical equipment distribution",
+      "Wellness technology",
+      "Hyperbaric oxygen therapy equipment",
+      "Aesthetic and body contouring systems",
+      "Rehabilitation and performance diagnostics",
+      "Recovery and regeneration technology",
+    ],
   });
   const websiteSchema = generateWebSiteSchema({
     name: businessConfig.name,

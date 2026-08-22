@@ -34,13 +34,13 @@ export default function EquipmentCard({
 }: EquipmentCardProps) {
   return (
     <motion.div
-      className="group grid grid-cols-1 lg:grid-cols-2 border-b border-[#262626]/[0.12]"
+      className="group grid grid-cols-1 lg:grid-cols-2 border-b border-white/[0.12]"
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.55, delay: Math.min(index * 0.025, 0.12), ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-[#262626]/[0.12] px-[clamp(32px,6vw,64px)] py-[clamp(48px,8vw,80px)]">
+      <div className="flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-white/[0.12] px-[clamp(32px,6vw,64px)] py-[clamp(48px,8vw,80px)]">
         <div className="flex items-center gap-4 mb-6 flex-wrap">
           <span className="text-[10px] font-bold tracking-[0.1em] text-[#bbbbbb]">
             {id}
@@ -56,18 +56,18 @@ export default function EquipmentCard({
         </div>
         
         <Link href={`/equipment/${id}`} className="group/title block">
-          <h3 className="font-light leading-[1.15] uppercase tracking-[0.01em] text-[clamp(28px,3.5vw,52px)] text-[#262626] mb-7 max-w-[380px] group-hover/title:text-[#1c69d4] transition-colors">
+          <h3 className="font-light leading-[1.15] uppercase tracking-[0.01em] text-[clamp(28px,3.5vw,52px)] text-[#eef5ff] mb-7 max-w-[380px] group-hover/title:text-[#3d8cff] transition-colors">
             {name}
           </h3>
         </Link>
         
-        <p className="text-[15px] leading-[1.75] text-[#757575] font-light max-w-[360px] mb-8">
+        <p className="text-[15px] leading-[1.75] text-[#a8b8ca] font-light max-w-[360px] mb-8">
           {description}
         </p>
 
         <Link 
           href={`/equipment/${id}`}
-          className="inline-flex items-center gap-[6px] text-[11px] font-bold tracking-[0.13em] uppercase text-[#262626] no-underline pb-[2px] transition-colors duration-200 rounded-none hover:text-[#1c69d4] mb-8"
+          className="inline-flex items-center gap-[6px] text-[11px] font-bold tracking-[0.13em] uppercase text-[#eef5ff] no-underline pb-[2px] transition-colors duration-200 rounded-none hover:text-[#3d8cff] mb-8"
         >
           View Full Specifications
           <ChevronRight size={14} />
@@ -97,17 +97,17 @@ export default function EquipmentCard({
           />
         </motion.div>
         
-        <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-md px-6 py-3 border-l-[3px] border-[#1c69d4]">
+        <div className="absolute top-6 left-6 bg-[#dce8f5]/95 backdrop-blur-md px-6 py-3 border-l-[3px] border-[#3d8cff]">
           <div className="relative h-[32px] w-36 flex items-center">
             {logo ? (
               <Image
                 src={logo}
                 alt={partner}
                 fill
-                className="object-contain object-left grayscale"
+                className="object-contain object-left"
               />
             ) : (
-              <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-[#262626]">
+              <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-[#eef5ff]">
                 {partner}
               </span>
             )}
