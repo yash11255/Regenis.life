@@ -40,6 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "All Equipment | Regenis Life",
     description: PAGE_DESCRIPTION,
+    images: [visibleEquipment[0]?.image ?? "/Regenis.png"],
   },
 };
 

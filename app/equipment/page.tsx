@@ -38,6 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Medical Equipment Showcase | Regenis Life",
     description: PAGE_DESCRIPTION,
+    images: [visibleEquipment[0]?.image ?? "/Regenis.png"],
   },
 };
 
