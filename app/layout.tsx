@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   authors: [{ name: "Regenis Life" }],
   creator: "Regenis Life",
   publisher: "Regenis Life",
+  verification: {
+    google: "TTFxLHyYBu9XSuoVpXk7WpsUsSKAsZsYytWNmKQJMzc",
+  },
   robots: {
     index: true,
     follow: true,
