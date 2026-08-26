@@ -403,6 +403,8 @@ export interface MedicalDeviceSchemaParams {
   category?: string;
   additionalProperty?: { label: string; value: string }[];
   relatedDeviceName?: string;
+  /** ISO 3166-1 alpha-2 country code for the manufacturer's country */
+  countryOfOrigin?: string;
 }
 
 export interface ProductSchemaParams {
@@ -416,6 +418,16 @@ export interface ProductSchemaParams {
   category?: string;
   additionalProperty?: { label: string; value: string }[];
   relatedDeviceUrl?: string;
+  /**
+   * Product availability status.
+   * Uses schema.org availability enumeration.
+   * Default: "https://schema.org/InStoreOnly"
+   */
+  availability?: string;
+  /**
+   * ISO 4217 currency code. Default: "INR"
+   */
+  priceCurrency?: string;
 }
 
 export function generateMedicalDeviceSchema(
@@ -459,11 +471,20 @@ export function generateMedicalDeviceSchema(
       name: params.relatedDeviceName,
     };
   }
+  if (params.countryOfOrigin) {
+    schema.countryOfOrigin = {
+      "@type": "Country",
+      name: params.countryOfOrigin,
+    };
+  }
 
   return schema;
 }
 
 export function generateProductSchema(params: ProductSchemaParams): LDJsonSchema {
+  // Build priceValidUntil as end of next calendar year
+  const priceValidUntil = `${new Date().getFullYear() + 1}-12-31`;
+
   const schema: LDJsonSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -481,10 +502,31 @@ export function generateProductSchema(params: ProductSchemaParams): LDJsonSchema
       "@type": "Organization",
       name: params.manufacturer,
     },
-    seller: {
-      "@type": "Organization",
-      name: params.seller.name,
-      url: params.seller.url,
+    offers: {
+      "@type": "Offer",
+      url: params.url,
+      priceCurrency: params.priceCurrency || "INR",
+      price: 0,
+      priceValidUntil,
+      availability: params.availability || "https://schema.org/InStoreOnly",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: {
+        "@type": "Organization",
+        name: params.seller.name,
+        url: params.seller.url,
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "IN",
+        returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "IN",
+        },
+      },
     },
   };
 

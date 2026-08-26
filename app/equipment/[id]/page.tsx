@@ -98,7 +98,18 @@ export default async function EquipmentDetailPage({
     category: equipment.category,
     additionalProperty: equipment.specifications,
     relatedDeviceName: equipment.alternateOption,
+    countryOfOrigin: equipment.manufacturer || equipment.partner,
   });
+
+  // Map equipment status to schema.org availability
+  const availabilityMap: Record<string, string> = {
+    "Not Arrived": "https://schema.org/PreOrder",
+  };
+  const availability =
+    equipment.currentStatus && availabilityMap[equipment.currentStatus]
+      ? availabilityMap[equipment.currentStatus]
+      : "https://schema.org/InStoreOnly";
+
   const productRichResultSchema = generateProductSchema({
     name: equipment.name,
     description: equipment.fullDescription || equipment.description,
@@ -112,6 +123,7 @@ export default async function EquipmentDetailPage({
     category: equipment.category,
     additionalProperty: equipment.specifications,
     relatedDeviceUrl: `${canonicalUrl}#medical-device`,
+    availability,
   });
   const detailPageSchema = generateWebPageSchema({
     name: `${equipment.name} | Regenis Life`,

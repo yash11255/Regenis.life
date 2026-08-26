@@ -1,6 +1,6 @@
 import type { FAQItem } from "./schema";
 
-export const SEO_LAST_MODIFIED = "2026-08-20";
+export const SEO_LAST_MODIFIED = "2026-08-26";
 
 export function getEquipmentFaqs(deviceCount: number): FAQItem[] {
   return [

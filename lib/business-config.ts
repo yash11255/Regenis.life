@@ -21,6 +21,14 @@ export const BUSINESS_DESCRIPTION =
 // TODO: replace with real social handles once created
 export const BUSINESS_SOCIAL_LINKS: string[] = [];
 
+export const BUSINESS_GEO = {
+  country: "IN",
+  region: "IN",
+  placename: "India",
+  language: "en",
+  locale: "en_IN",
+};
+
 export const businessConfig = {
   name: BUSINESS_NAME,
   url: BUSINESS_URL,

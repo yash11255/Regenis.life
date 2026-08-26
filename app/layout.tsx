@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SchemaScript } from "./components/SchemaScript";
 import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/schema";
-import { businessConfig, BUSINESS_DESCRIPTION, BUSINESS_SOCIAL_LINKS } from "@/lib/business-config";
+import { businessConfig, BUSINESS_DESCRIPTION, BUSINESS_GEO, BUSINESS_SOCIAL_LINKS } from "@/lib/business-config";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     description: BUSINESS_DESCRIPTION,
     url: "/",
     siteName: "Regenis Life",
-    locale: "en_US",
+    locale: BUSINESS_GEO.locale,
     type: "website",
     images: [{ url: "/Regenis.png" }],
   },
@@ -90,6 +90,9 @@ export default function RootLayout({
           rel="preconnect"
           href="https://fonts.googleapis.com"
         />
+        <meta name="geo.region" content={BUSINESS_GEO.region} />
+        <meta name="geo.placename" content={BUSINESS_GEO.placename} />
+        <meta httpEquiv="content-language" content={`${BUSINESS_GEO.language}-${BUSINESS_GEO.country}`} />
         <SchemaScript
           schema={[organizationSchema, websiteSchema]}
           id="business-schema"
