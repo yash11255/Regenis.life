@@ -9,6 +9,7 @@ import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
 import {
   generateBreadcrumbSchema,
   generateItemListSchema,
+  generateOfferCatalogSchema,
   generateWebPageSchema,
 } from "@/lib/schema";
 import { SEO_LAST_MODIFIED } from "@/lib/seo-content";
@@ -80,11 +81,19 @@ export default async function AllEquipmentPage({ searchParams }: AllEquipmentPag
     })),
     `${PAGE_URL}#equipment-list`
   );
+  const offerCatalogSchema = generateOfferCatalogSchema(
+    "Regenis Life Equipment Services",
+    visibleEquipment.map((eq) => ({
+      name: eq.name,
+      url: `${BUSINESS_URL}/equipment/${eq.id}`,
+      description: eq.description,
+    }))
+  );
 
   return (
     <PageShell headerVariant="transparent">
       <main className="font-sans antialiased overflow-hidden bg-[#071426]">
-        <SchemaScript id="all-equipment-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema]} />
+        <SchemaScript id="all-equipment-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema, offerCatalogSchema]} />
         <style dangerouslySetInnerHTML={{
           __html: `
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');

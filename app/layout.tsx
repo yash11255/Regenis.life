@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SchemaScript } from "./components/SchemaScript";
-import { generateOrganizationSchema, generateWebSiteSchema } from "@/lib/schema";
-import { businessConfig, BUSINESS_DESCRIPTION, BUSINESS_GEO, BUSINESS_SOCIAL_LINKS } from "@/lib/business-config";
+import { generateOrganizationSchema, generateSiteNavigationSchema, generateWebSiteSchema } from "@/lib/schema";
+import { businessConfig, BUSINESS_DESCRIPTION, BUSINESS_GEO, BUSINESS_SOCIAL_LINKS, BUSINESS_URL } from "@/lib/business-config";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -36,12 +36,13 @@ export const metadata: Metadata = {
     siteName: "Regenis Life",
     locale: BUSINESS_GEO.locale,
     type: "website",
-    images: [{ url: "/Regenis.png" }],
+    images: [{ url: "/Regenis.png", width: 1536, height: 1024, alt: "Regenis Life" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Regenis Life | Clinical & Wellness Equipment",
     description: BUSINESS_DESCRIPTION,
+    creator: "@RegenisLife",
     images: ["/Regenis.png"],
   },
   icons: {
@@ -81,11 +82,24 @@ export default function RootLayout({
   const websiteSchema = generateWebSiteSchema({
     name: businessConfig.name,
     url: businessConfig.url,
+    inLanguage: "en-IN",
   });
+  const siteNavigationSchema = generateSiteNavigationSchema(
+    [
+      { name: "Equipment", url: `${BUSINESS_URL}/equipment` },
+      { name: "Full Catalog", url: `${BUSINESS_URL}/equipment/all` },
+      { name: "Contact", url: `${BUSINESS_URL}/equipment#contact` },
+    ],
+    BUSINESS_URL
+  );
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="dns-prefetch" href="https://www.youtube.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        <link rel="alternate" hrefLang="en-IN" href="https://regenis.life" />
+        <link rel="alternate" hrefLang="x-default" href="https://regenis.life" />
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"
@@ -94,7 +108,7 @@ export default function RootLayout({
         <meta name="geo.placename" content={BUSINESS_GEO.placename} />
         <meta httpEquiv="content-language" content={`${BUSINESS_GEO.language}-${BUSINESS_GEO.country}`} />
         <SchemaScript
-          schema={[organizationSchema, websiteSchema]}
+          schema={[organizationSchema, websiteSchema, siteNavigationSchema]}
           id="business-schema"
         />
       </head>

@@ -258,6 +258,7 @@ export interface WebSiteSchemaParams {
   name: string;
   url: string;
   searchUrl?: string;
+  inLanguage?: string;
 }
 
 export function generateWebSiteSchema(params: WebSiteSchemaParams): LDJsonSchema {
@@ -270,7 +271,9 @@ export function generateWebSiteSchema(params: WebSiteSchemaParams): LDJsonSchema
     publisher: {
       "@id": `${params.url}/#organization`,
     },
+    ...(params.inLanguage ? { inLanguage: params.inLanguage } : {}),
   };
+
 
   if (params.searchUrl) {
     schema.potentialAction = {
@@ -561,6 +564,63 @@ export function generateOfferCatalogSchema(
         url: item.url,
         ...(item.description ? { description: item.description } : {}),
       },
+    })),
+  };
+}
+
+// ============================================================================
+// VIDEO OBJECT SCHEMA
+// ============================================================================
+
+export interface VideoObjectSchemaParams {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: string;
+  contentUrl?: string;
+  embedUrl?: string;
+  duration?: string;
+}
+
+export function generateVideoObjectSchema(params: VideoObjectSchemaParams): LDJsonSchema {
+  const schema: LDJsonSchema = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: params.name,
+    description: params.description,
+    thumbnailUrl: params.thumbnailUrl,
+    uploadDate: params.uploadDate,
+  };
+
+  if (params.contentUrl) schema.contentUrl = params.contentUrl;
+  if (params.embedUrl) schema.embedUrl = params.embedUrl;
+  if (params.duration) schema.duration = params.duration;
+
+  return schema;
+}
+
+// ============================================================================
+// SITE NAVIGATION ELEMENT SCHEMA
+// ============================================================================
+
+export interface NavigationItem {
+  name: string;
+  url: string;
+}
+
+export function generateSiteNavigationSchema(
+  items: NavigationItem[],
+  siteUrl: string
+): LDJsonSchema {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SiteNavigationElement",
+    "@id": `${siteUrl}/#site-navigation`,
+    name: "Main Navigation",
+    hasPart: items.map((item) => ({
+      "@type": "WebPage",
+      name: item.name,
+      url: item.url,
     })),
   };
 }

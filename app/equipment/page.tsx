@@ -11,7 +11,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL, BUSINESS_EMAIL } from "@/lib/business-config";
-import { generateBreadcrumbSchema, generateFAQSchema, generateItemListSchema, generateWebPageSchema } from "@/lib/schema";
+import { generateBreadcrumbSchema, generateFAQSchema, generateItemListSchema, generateVideoObjectSchema, generateWebPageSchema } from "@/lib/schema";
 import { getEquipmentFaqs, SEO_LAST_MODIFIED } from "@/lib/seo-content";
 
 import { visibleEquipment } from "../data/equipment";
@@ -76,11 +76,18 @@ export default function EquipmentShowcasePage() {
     `${PAGE_URL}#featured-equipment`
   );
   const faqSchema = generateFAQSchema(getEquipmentFaqs(visibleEquipment.length));
+  const videoSchema = generateVideoObjectSchema({
+    name: "Regenis Life Clinical Equipment Showcase",
+    description: "Regenis Life presents medical, wellness, rehabilitation, recovery, diagnostics, and clinical equipment for professional facilities.",
+    thumbnailUrl: "https://i.ytimg.com/vi/9uoYBcnOF2c/maxresdefault.jpg",
+    uploadDate: SEO_LAST_MODIFIED,
+    embedUrl: "https://www.youtube.com/embed/9uoYBcnOF2c",
+  });
 
   return (
     <PageShell headerVariant="transparent">
       <main className="font-sans antialiased overflow-hidden bg-[#071426]">
-        <SchemaScript id="equipment-list-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema, faqSchema]} />
+        <SchemaScript id="equipment-list-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema, faqSchema, videoSchema]} />
         <style dangerouslySetInnerHTML={{
           __html: `
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
