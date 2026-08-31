@@ -56,7 +56,7 @@ export default function PartnerSection({ equipments, initialCategory }: PartnerS
   };
 
   return (
-    <section id="showcase" className="bg-[#0b1b2f] text-[#eef5ff] font-sans antialiased min-h-[60vh]">
+    <section id="showcase" className="bg-transparent text-[#eef5ff] font-sans antialiased min-h-[60vh]">
       <FilterBar
         categories={categories}
         activeCategory={activeCategory}

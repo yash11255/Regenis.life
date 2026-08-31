@@ -26,7 +26,7 @@ export default function PartnerBrandsSection({
   ctaLabel = "View Equipment Partners",
 }: PartnerBrandsSectionProps) {
   return (
-    <section id="partners" className="partner-brands bg-[#0c1e33] text-[#eef5ff] antialiased scroll-mt-32">
+    <section id="partners" className="partner-brands bg-transparent text-[#eef5ff] antialiased scroll-mt-32">
       <style dangerouslySetInnerHTML={{
         __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');

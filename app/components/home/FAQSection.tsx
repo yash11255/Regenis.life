@@ -5,7 +5,7 @@ export default function FAQSection() {
   const faqs = getEquipmentFaqs(visibleEquipment.length);
 
   return (
-    <section className="bg-[#071426] text-[#eef5ff] border-t border-white/[0.08] px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,100px)]">
+    <section className="bg-transparent text-[#eef5ff] border-t border-white/[0.08] px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,100px)]">
       <div className="max-w-[900px]">
         <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#1c69d4] leading-[1.3] mb-5">
           Common Questions

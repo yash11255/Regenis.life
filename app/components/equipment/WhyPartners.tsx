@@ -27,7 +27,7 @@ const POINTS = [
 
 export default function WhyPartners() {
   return (
-    <section className="equipment-why-partners bg-[#0c1e33] text-[#eef5ff] antialiased border-t border-white/[0.08]">
+    <section className="equipment-why-partners bg-transparent text-[#eef5ff] antialiased border-t border-white/[0.08]">
       <style dangerouslySetInnerHTML={{
         __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');

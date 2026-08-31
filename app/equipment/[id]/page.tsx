@@ -147,7 +147,7 @@ export default async function EquipmentDetailPage({
 
   return (
     <PageShell headerVariant="solid">
-      <main className="font-sans antialiased bg-[#071426] text-[#eef5ff] min-h-screen">
+      <main className="font-sans antialiased bg-transparent text-[#eef5ff] min-h-screen">
         <SchemaScript
           id="equipment-detail-schema"
           schema={[detailPageSchema, breadcrumbSchema, productSchema, productRichResultSchema]}

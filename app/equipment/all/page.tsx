@@ -92,7 +92,7 @@ export default async function AllEquipmentPage({ searchParams }: AllEquipmentPag
 
   return (
     <PageShell headerVariant="transparent">
-      <main className="font-sans antialiased overflow-hidden bg-[#071426]">
+      <main className="font-sans antialiased bg-transparent">
         <SchemaScript id="all-equipment-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema, offerCatalogSchema]} />
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -123,7 +123,7 @@ export default async function AllEquipmentPage({ searchParams }: AllEquipmentPag
         <PartnerSection equipments={visibleEquipment} initialCategory={initialPartner} />
 
         {/* Footer */}
-        <section className="px-[clamp(36px,6vw,88px)] py-[clamp(64px,8vw,112px)] bg-[#050d18] text-white border-t border-white/[0.08] text-center">
+        <section className="px-[clamp(36px,6vw,88px)] py-[clamp(64px,8vw,112px)] bg-transparent text-white border-t border-white/[0.08] text-center">
           <div className="text-[11px] font-normal tracking-[0.2em] uppercase text-[#bbbbbb] leading-[1.3]">
             Regenis Life © {new Date().getFullYear()}
           </div>

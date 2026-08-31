@@ -37,7 +37,7 @@ const CATEGORIES = [
 
 export default function CategoryOverview() {
   return (
-    <section className="equipment-category-overview bg-[#071426] text-[#eef5ff] antialiased">
+    <section className="equipment-category-overview bg-transparent text-[#eef5ff] antialiased">
       <style dangerouslySetInnerHTML={{
         __html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');

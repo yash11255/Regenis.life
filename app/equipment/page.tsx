@@ -7,6 +7,7 @@ import WhyPartners from "../components/equipment/WhyPartners";
 import FeaturedShowcase from "../components/equipment/FeaturedShowcase";
 import FAQSection from "../components/home/FAQSection";
 import PartnerBrandsSection from "../components/home/PartnerBrandsSection";
+import ParticleBackground from "../components/ParticleBackground";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { SchemaScript } from "../components/SchemaScript";
@@ -86,60 +87,62 @@ export default function EquipmentShowcasePage() {
 
   return (
     <PageShell headerVariant="transparent">
-      <main className="font-sans antialiased overflow-hidden bg-[#071426]">
+      <main className="font-sans antialiased bg-transparent relative">
         <SchemaScript id="equipment-list-schema" schema={[collectionSchema, breadcrumbSchema, itemListSchema, faqSchema, videoSchema]} />
         <style dangerouslySetInnerHTML={{
           __html: `
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
-          body { font-family: 'Inter', Helvetica, Arial, sans-serif; }
+          body { font-family: 'Inter', Helvetica, Arial, sans-serif; background-color: #050d18; }
         `}} />
 
-        <Hero />
-        <PartnerBrandsSection />
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <Hero />
+          <PartnerBrandsSection />
 
-        <CategoryOverview />
-        <FeaturedShowcase
-          eyebrow="A First Look at the Portfolio"
-          title={<>Featured <span className="text-[#1c69d4]">Devices</span></>}
-          items={FEATURED_ITEMS}
-          ctaHref="/equipment/all"
-          ctaLabel="View Full Catalog"
-        />
-        <WhyPartners />
-        <FAQSection />
+          <CategoryOverview />
+          <FeaturedShowcase
+            eyebrow="A First Look at the Portfolio"
+            title={<>Featured <span className="text-[#1c69d4]">Devices</span></>}
+            items={FEATURED_ITEMS}
+            ctaHref="/equipment/all"
+            ctaLabel="View Full Catalog"
+          />
+          <WhyPartners />
+          <FAQSection />
 
-        {/* CTA banner */}
-        <section id="contact" className="px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,96px)] bg-[#050d18] text-white border-t border-white/[0.08] text-center scroll-mt-32">
-          <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#bbbbbb] leading-[1.3] mb-6">
-            Ready to Equip Your Facility?
-          </div>
-          <h2 className="font-light leading-[1.15] uppercase tracking-[-0.01em] text-[clamp(28px,4vw,52px)] text-white max-w-[720px] mx-auto mb-10">
-            Talk to Our Team About <span className="text-[#1c69d4]">Clinical Equipment</span>
-          </h2>
-          <div className="flex gap-5 flex-wrap items-center justify-center">
-            <a
-              href={`mailto:${BUSINESS_EMAIL[0]}`}
-              className="site-action-secondary"
-            >
-              Enquire Now
-              <ArrowUpRight size={16} strokeWidth={2} />
-            </a>
-            <Link
-              href="/equipment/all"
-              className="site-action-secondary"
-            >
-              View Full Catalog
-              <ArrowUpRight size={12} />
-            </Link>
-          </div>
-        </section>
+          {/* CTA banner */}
+          <section id="contact" className="px-[clamp(24px,5vw,80px)] py-[clamp(56px,7vw,96px)] bg-transparent text-white border-t border-white/[0.08] text-center scroll-mt-32">
+            <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#bbbbbb] leading-[1.3] mb-6">
+              Ready to Equip Your Facility?
+            </div>
+            <h2 className="font-light leading-[1.15] uppercase tracking-[-0.01em] text-[clamp(28px,4vw,52px)] text-white max-w-[720px] mx-auto mb-10">
+              Talk to Our Team About <span className="text-[#1c69d4]">Clinical Equipment</span>
+            </h2>
+            <div className="flex gap-5 flex-wrap items-center justify-center">
+              <a
+                href={`mailto:${BUSINESS_EMAIL[0]}`}
+                className="site-action-secondary"
+              >
+                Enquire Now
+                <ArrowUpRight size={16} strokeWidth={2} />
+              </a>
+              <Link
+                href="/equipment/all"
+                className="site-action-secondary"
+              >
+                View Full Catalog
+                <ArrowUpRight size={12} />
+              </Link>
+            </div>
+          </section>
 
-        {/* Footer */}
-        <section className="px-[clamp(36px,6vw,88px)] py-[clamp(64px,8vw,112px)] bg-[#050d18] text-white border-t border-white/[0.08] text-center">
-          <div className="text-[11px] font-normal tracking-[0.2em] uppercase text-[#bbbbbb] leading-[1.3]">
-            Regenis Life © {new Date().getFullYear()}
-          </div>
-        </section>
+          {/* Footer */}
+          <section className="px-[clamp(36px,6vw,88px)] py-[clamp(64px,8vw,112px)] bg-transparent text-white border-t border-white/[0.08] text-center">
+            <div className="text-[11px] font-normal tracking-[0.2em] uppercase text-[#bbbbbb] leading-[1.3]">
+              Regenis Life © {new Date().getFullYear()}
+            </div>
+          </section>
+        </div>
       </main>
     </PageShell>
   );

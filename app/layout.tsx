@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SchemaScript } from "./components/SchemaScript";
 import { generateOrganizationSchema, generateSiteNavigationSchema, generateWebSiteSchema } from "@/lib/schema";
 import { businessConfig, BUSINESS_DESCRIPTION, BUSINESS_GEO, BUSINESS_SOCIAL_LINKS, BUSINESS_URL } from "@/lib/business-config";
+import ParticleBackground from "./components/ParticleBackground";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -112,7 +113,10 @@ export default function RootLayout({
           id="business-schema"
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <ParticleBackground />
+        {children}
+      </body>
     </html>
   );
 }

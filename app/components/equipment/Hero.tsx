@@ -12,7 +12,7 @@ export default function Hero() {
   const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
 
   return (
-    <section className="relative min-h-screen bg-[#050d18] overflow-hidden flex flex-col justify-center lg:justify-end">
+    <section className="relative min-h-screen bg-transparent overflow-hidden flex flex-col justify-center lg:justify-end">
       {/* Background Video Container */}
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none"
@@ -28,12 +28,9 @@ export default function Hero() {
             style={{ border: 'none' }}
           />
         </div>
-        {/* Overlay for cinematic mood and text readability */}
-        <div className="absolute inset-0 bg-[#050d18]/45 brightness-[0.35] contrast-110" />
+        {/* Overlay for text readability */}
+        <div className="absolute inset-0 bg-black/25 pointer-events-none" />
       </motion.div>
-
-      {/* Gradient Fade */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#050d18] via-[#050d18]/30 to-transparent pointer-events-none z-[1]" />
 
       <div className="relative z-10 px-[clamp(24px,5vw,80px)] pt-[clamp(64px,8vw,100px)] pb-[clamp(48px,6vw,72px)]">
         <motion.div

@@ -84,7 +84,7 @@ export default function EquipmentCard({
         </div>
       </div>
 
-      <Link href={`/equipment/${id}`} className="overflow-hidden relative min-h-[400px] lg:min-h-[520px] block cursor-pointer">
+      <Link href={`/equipment/${id}`} className="overflow-hidden relative min-h-[400px] lg:min-h-[520px] block cursor-pointer z-10 bg-[#071426]">
         <motion.div
           className="w-full h-full absolute inset-0 grayscale-[15%] contrast-[1.06] transition-transform duration-700 ease-out group-hover:scale-[1.03] group-hover:grayscale-0"
         >

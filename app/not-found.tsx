@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <PageShell headerVariant="solid">
-      <main className="relative flex min-h-[calc(100vh-180px)] items-center overflow-hidden bg-[#071426] px-[clamp(24px,6vw,96px)] py-[clamp(96px,12vw,160px)] text-[#eef5ff]">
+      <main className="relative flex min-h-[calc(100vh-180px)] items-center overflow-hidden bg-transparent px-[clamp(24px,6vw,96px)] py-[clamp(96px,12vw,160px)] text-[#eef5ff]">
         <div className="pointer-events-none absolute -right-24 top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-[#1c69d4]/10 blur-[100px]" />
         <div className="relative z-10 max-w-[760px]">
           <div className="mb-6 text-[11px] font-normal uppercase tracking-[0.2em] text-[#3d8cff]">
