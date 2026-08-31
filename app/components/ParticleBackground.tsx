@@ -16,7 +16,8 @@ export default function ParticleBackground() {
         options={{
           fullScreen: { enable: true, zIndex: -1 },
           background: { color: { value: "transparent" } },
-          fpsLimit: 120,
+          fpsLimit: 60,
+          smooth: true,
           interactivity: {
             events: {
               onHover: {
@@ -30,18 +31,18 @@ export default function ParticleBackground() {
             },
             modes: {
               grab: {
-                distance: 180,
+                distance: 140,
                 links: {
-                  opacity: 0.45,
+                  opacity: 0.5,
                   color: "#3d8aff",
                 },
               },
               push: {
-                quantity: 18,
+                quantity: 8,
               },
               repulse: {
-                distance: 260,
-                duration: 0.5,
+                distance: 180,
+                duration: 0.4,
               },
             },
           },
@@ -51,9 +52,9 @@ export default function ParticleBackground() {
             },
             links: {
               color: "#1c69d4",
-              distance: 140,
+              distance: 120,
               enable: true,
-              opacity: 0.22,
+              opacity: 0.25,
               width: 1,
             },
             move: {
@@ -72,10 +73,13 @@ export default function ParticleBackground() {
                 width: 1200,
                 height: 800,
               },
-              value: 65,
+              value: 45,
+              limit: {
+                value: 65,
+              },
             },
             opacity: {
-              value: { min: 0.25, max: 0.75 },
+              value: { min: 0.3, max: 0.8 },
               animation: {
                 enable: true,
                 speed: 0.8,
@@ -86,7 +90,7 @@ export default function ParticleBackground() {
               type: "circle",
             },
             size: {
-              value: { min: 1.5, max: 3.5 },
+              value: { min: 1.5, max: 3 },
             },
           },
           detectRetina: true,

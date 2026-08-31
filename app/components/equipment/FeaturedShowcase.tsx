@@ -302,20 +302,27 @@ export default function FeaturedShowcase({
           }
         }
 
-        /* Left text panel */
+        /* Left text panel with glassmorphic backdrop for crystal clear text readability */
         .efs3d-left {
           padding: 0 0 16px;
         }
         @media (min-width: 768px) {
           .efs3d-left {
-            padding: 0 24px 0 0;
+            padding: 0;
           }
         }
         .efs3d-text-panel {
           position: relative;
+          background: rgba(5, 13, 24, 0.82);
+          backdrop-filter: blur(20px) saturate(1.2);
+          -webkit-backdrop-filter: blur(20px) saturate(1.2);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 20px;
+          padding: clamp(20px, 4vw, 28px);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
-        /* Step content — rendered directly (no absolute overlay) */
+        /* Step content */
         .efs3d-step {
           animation: efs3d-fadein 0.4s ease;
         }
@@ -336,43 +343,44 @@ export default function FeaturedShowcase({
           margin-bottom: 16px;
         }
         .efs3d-step-title {
-          font-size: clamp(24px, 3vw, 36px);
-          font-weight: 300;
+          font-size: clamp(22px, 2.8vw, 32px);
+          font-weight: 400;
           text-transform: uppercase;
           letter-spacing: -0.01em;
           line-height: 1.2;
-          color: #fff;
+          color: #ffffff;
           margin: 0 0 16px;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
         .efs3d-step-desc {
           font-size: 14px;
-          line-height: 1.7;
-          color: rgba(255,255,255,0.55);
+          line-height: 1.65;
+          color: #dce8f5;
           margin: 0 0 20px;
-          max-width: 400px;
+          max-width: 420px;
         }
         .efs3d-step-partner {
-          font-size: 10px;
+          font-size: 11px;
           font-weight: 700;
-          letter-spacing: 0.14em;
+          letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #1c69d4;
+          color: #3d8cff;
           margin-bottom: 8px;
         }
         .efs3d-step-link {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: 12px;
-          font-weight: 500;
-          color: #1c69d4;
+          font-size: 13px;
+          font-weight: 600;
+          color: #60a5fa;
           text-decoration: none;
-          transition: gap 0.3s ease;
+          transition: all 0.3s ease;
           margin-top: 8px;
         }
         .efs3d-step-link:hover {
           gap: 10px;
-          color: #3d8aff;
+          color: #93c5fd;
         }
 
         /* Category & manufacturer pills */
@@ -387,18 +395,18 @@ export default function FeaturedShowcase({
           align-items: center;
           gap: 5px;
           font-size: 10px;
-          font-weight: 500;
+          font-weight: 600;
           letter-spacing: 0.04em;
           padding: 5px 12px;
           border-radius: 100px;
-          background: rgba(255,255,255,0.06);
-          color: rgba(255,255,255,0.6);
-          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255, 255, 255, 0.08);
+          color: #e2e8f0;
+          border: 1px solid rgba(255, 255, 255, 0.15);
         }
         .efs3d-meta-pill.exclusive {
-          background: rgba(28,105,212,0.12);
-          color: #1c69d4;
-          border-color: rgba(28,105,212,0.2);
+          background: rgba(28, 105, 212, 0.25);
+          color: #60a5fa;
+          border-color: rgba(96, 165, 250, 0.4);
         }
 
         /* Specs grid */
@@ -410,23 +418,23 @@ export default function FeaturedShowcase({
           max-width: 420px;
         }
         .efs3d-spec {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           border-radius: 10px;
-          padding: 10px 12px;
+          padding: 10px 14px;
         }
         .efs3d-spec-label {
           font-size: 9px;
-          font-weight: 600;
-          letter-spacing: 0.08em;
+          font-weight: 700;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: rgba(255,255,255,0.35);
+          color: #94a3b8;
           margin-bottom: 4px;
         }
         .efs3d-spec-value {
-          font-size: 12px;
-          font-weight: 500;
-          color: rgba(255,255,255,0.85);
+          font-size: 13px;
+          font-weight: 600;
+          color: #ffffff;
           line-height: 1.3;
         }
 
@@ -441,18 +449,19 @@ export default function FeaturedShowcase({
           display: flex;
           align-items: flex-start;
           gap: 8px;
-          font-size: 12px;
-          color: rgba(255,255,255,0.55);
+          font-size: 13px;
+          color: #cbd5e1;
           line-height: 1.5;
           margin-bottom: 6px;
         }
         .efs3d-features li::before {
           content: '';
           display: inline-block;
-          width: 4px;
-          height: 4px;
+          width: 5px;
+          height: 5px;
           border-radius: 50%;
-          background: #1c69d4;
+          background: #3d8cff;
+          box-shadow: 0 0 6px #3d8cff;
           flex-shrink: 0;
           margin-top: 7px;
         }
@@ -461,7 +470,7 @@ export default function FeaturedShowcase({
         .efs3d-divider {
           width: 100%;
           height: 1px;
-          background: rgba(255,255,255,0.06);
+          background: rgba(255, 255, 255, 0.12);
           margin: 16px 0;
           max-width: 420px;
         }
