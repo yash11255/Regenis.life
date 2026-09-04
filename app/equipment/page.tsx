@@ -69,7 +69,7 @@ export default function EquipmentShowcasePage() {
       url: `${BUSINESS_URL}/equipment/${eq.id}`,
       description: eq.description,
       image: `${BUSINESS_URL}${eq.image}`,
-      itemType: ["Product", "MedicalDevice"],
+      itemType: "MedicalDevice",
       brand: eq.partner,
       manufacturer: eq.manufacturer || eq.partner,
       category: eq.category,

@@ -431,6 +431,18 @@ export interface ProductSchemaParams {
    * ISO 4217 currency code. Default: "INR"
    */
   priceCurrency?: string;
+  /**
+   * Shipping rate value. Default: 0 (free shipping / contact for quote)
+   */
+  shippingRate?: number;
+  /**
+   * ISO 8601 duration for handling time. Default: "P3D" (3 business days)
+   */
+  handlingTime?: string;
+  /**
+   * ISO 8601 duration for transit time. Default: "P7D" (7 days)
+   */
+  transitTime?: string;
 }
 
 export function generateMedicalDeviceSchema(
@@ -511,6 +523,7 @@ export function generateProductSchema(params: ProductSchemaParams): LDJsonSchema
       priceCurrency: params.priceCurrency || "INR",
       price: 0,
       priceValidUntil,
+      validFrom: "2024-01-01",
       availability: params.availability || "https://schema.org/InStoreOnly",
       itemCondition: "https://schema.org/NewCondition",
       seller: {
@@ -525,9 +538,29 @@ export function generateProductSchema(params: ProductSchemaParams): LDJsonSchema
       },
       shippingDetails: {
         "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: params.shippingRate ?? 0,
+          currency: params.priceCurrency || "INR",
+        },
         shippingDestination: {
           "@type": "DefinedRegion",
           addressCountry: "IN",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 5,
+            unitCode: "d",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 3,
+            maxValue: 14,
+            unitCode: "d",
+          },
         },
       },
     },
