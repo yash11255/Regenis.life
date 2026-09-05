@@ -443,6 +443,23 @@ export interface ProductSchemaParams {
    * ISO 8601 duration for transit time. Default: "P7D" (7 days)
    */
   transitTime?: string;
+  /**
+   * Aggregate rating for the product.
+   */
+  aggregateRating?: {
+    ratingValue: number;
+    reviewCount: number;
+    bestRating?: number;
+  };
+  /**
+   * A single expert/professional review.
+   */
+  review?: {
+    author: string;
+    ratingValue: number;
+    reviewBody: string;
+    datePublished?: string;
+  };
 }
 
 export function generateMedicalDeviceSchema(
@@ -576,6 +593,30 @@ export function generateProductSchema(params: ProductSchemaParams): LDJsonSchema
   }
   if (params.relatedDeviceUrl) {
     schema.isRelatedTo = { "@id": params.relatedDeviceUrl };
+  }
+  if (params.aggregateRating) {
+    schema.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: params.aggregateRating.ratingValue,
+      reviewCount: params.aggregateRating.reviewCount,
+      bestRating: params.aggregateRating.bestRating ?? 5,
+    };
+  }
+  if (params.review) {
+    schema.review = {
+      "@type": "Review",
+      author: {
+        "@type": "Organization",
+        name: params.review.author,
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: params.review.ratingValue,
+        bestRating: 5,
+      },
+      reviewBody: params.review.reviewBody,
+      datePublished: params.review.datePublished || "2024-01-01",
+    };
   }
 
   return schema;

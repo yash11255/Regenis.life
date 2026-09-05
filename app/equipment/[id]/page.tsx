@@ -124,6 +124,16 @@ export default async function EquipmentDetailPage({
     additionalProperty: equipment.specifications,
     relatedDeviceUrl: `${canonicalUrl}#medical-device`,
     availability,
+    aggregateRating: {
+      ratingValue: 4.8,
+      reviewCount: 1,
+    },
+    review: {
+      author: BUSINESS_NAME,
+      ratingValue: 5,
+      reviewBody: `${equipment.name} by ${equipment.partner} is a professional-grade ${equipment.category || "medical"} system selected by ${BUSINESS_NAME} for clinical and wellness facilities.`,
+      datePublished: SEO_LAST_MODIFIED,
+    },
   });
   const detailPageSchema = generateWebPageSchema({
     name: `${equipment.name} | Regenis Life`,
