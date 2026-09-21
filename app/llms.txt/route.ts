@@ -1,4 +1,5 @@
 import { visibleEquipment } from "../data/equipment";
+import { CATEGORIES } from "../data/categories";
 import { BUSINESS_EMAIL, BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
 
 export const dynamic = "force-static";
@@ -27,9 +28,17 @@ export function GET() {
     "> Regenis Life curates medical and wellness equipment for professional clinical, rehabilitation, aesthetic, recovery, diagnostics, and innovation facilities.",
     "",
     "## Primary pages",
+    `- Home: ${BUSINESS_URL}/`,
     `- Equipment showcase: ${BUSINESS_URL}/equipment`,
     `- Full equipment catalog: ${BUSINESS_URL}/equipment/all`,
+    `- About: ${BUSINESS_URL}/about`,
+    `- Contact: ${BUSINESS_URL}/contact`,
     `- Enquiries: mailto:${BUSINESS_EMAIL[0]}`,
+    "",
+    "## Categories",
+    ...CATEGORIES.map(
+      (c) => `- ${c.name}: ${BUSINESS_URL}/equipment/category/${c.slug} — ${c.blurb}`
+    ),
     "",
     "## Equipment catalog",
     "The following product names, descriptions, images, and URLs are the authoritative catalog content published by Regenis Life:",

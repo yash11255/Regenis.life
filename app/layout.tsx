@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
 import { SchemaScript } from "./components/SchemaScript";
-import { generateOrganizationSchema, generateSiteNavigationSchema, generateWebSiteSchema } from "@/lib/schema";
-import { businessConfig, BUSINESS_DESCRIPTION, BUSINESS_GEO, BUSINESS_SOCIAL_LINKS, BUSINESS_URL } from "@/lib/business-config";
-import ParticleBackground from "./components/ParticleBackground";
+import {
+  generateOrganizationSchema,
+  generateSiteNavigationSchema,
+  generateWebSiteSchema,
+} from "@/lib/schema";
+import {
+  businessConfig,
+  BUSINESS_DESCRIPTION,
+  BUSINESS_GEO,
+  BUSINESS_SOCIAL_LINKS,
+  BUSINESS_URL,
+} from "@/lib/business-config";
+import { fontVariables } from "./fonts";
+import SiteHeader from "./components/site/SiteHeader";
+import SiteFooter from "./components/site/SiteFooter";
+import SiteBackground from "./components/site/SiteBackground";
+import RouteTransition from "./components/RouteTransition";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -89,33 +103,39 @@ export default function RootLayout({
     [
       { name: "Equipment", url: `${BUSINESS_URL}/equipment` },
       { name: "Full Catalog", url: `${BUSINESS_URL}/equipment/all` },
-      { name: "Contact", url: `${BUSINESS_URL}/equipment#contact` },
+      { name: "About", url: `${BUSINESS_URL}/about` },
+      { name: "Contact", url: `${BUSINESS_URL}/contact` },
     ],
     BUSINESS_URL
   );
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en-IN" suppressHydrationWarning className={fontVariables}>
       <head>
         <link rel="dns-prefetch" href="https://www.youtube.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-        <link rel="alternate" hrefLang="en-IN" href="https://regenis.life" />
-        <link rel="alternate" hrefLang="x-default" href="https://regenis.life" />
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="Regenis Life (LLM-readable)" />
         <meta name="geo.region" content={BUSINESS_GEO.region} />
         <meta name="geo.placename" content={BUSINESS_GEO.placename} />
-        <meta httpEquiv="content-language" content={`${BUSINESS_GEO.language}-${BUSINESS_GEO.country}`} />
+        <meta
+          httpEquiv="content-language"
+          content={`${BUSINESS_GEO.language}-${BUSINESS_GEO.country}`}
+        />
         <SchemaScript
           schema={[organizationSchema, websiteSchema, siteNavigationSchema]}
           id="business-schema"
         />
       </head>
       <body suppressHydrationWarning>
-        <ParticleBackground />
-        {children}
+        <a href="#page-content" className="skip-link">
+          Skip to content
+        </a>
+        <SiteBackground />
+        <SiteHeader />
+        <div id="page-content" tabIndex={-1}>
+          <RouteTransition>{children}</RouteTransition>
+        </div>
+        <SiteFooter />
       </body>
     </html>
   );

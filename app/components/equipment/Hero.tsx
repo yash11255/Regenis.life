@@ -1,75 +1,81 @@
 "use client";
 
-import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import Container from "../ui/Container";
+import Eyebrow from "../ui/Eyebrow";
+import Button from "../ui/Button";
+import ParticleField from "../site/ParticleField";
+import HeroVideo from "./HeroVideo";
+import { easeOutExpo } from "@/lib/motion";
 import { BUSINESS_EMAIL } from "@/lib/business-config";
 
-export default function Hero() {
-  const { scrollYProgress } = useScroll();
-  // Maintain the subtle parallax effect for the video container
-  const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+interface HeroProps {
+  eyebrow?: string;
+  title?: React.ReactNode;
+  summary?: string;
+  primary?: { label: string; href: string };
+}
+
+export default function Hero({
+  eyebrow = "Regenis Life — elite medical systems",
+  title = (
+    <>
+      Clinical precision.
+      <br />
+      <span className="text-primary-on-dark">Engineered</span> for outcomes.
+    </>
+  ),
+  summary = "The world's most advanced medical and wellness equipment platforms, precision-selected for clinical environments where outcomes define reputation.",
+  primary = { label: "Explore equipment", href: "#featured-devices" },
+}: HeroProps) {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "18%"]);
 
   return (
-    <section className="relative min-h-screen bg-transparent overflow-hidden flex flex-col justify-center lg:justify-end">
-      {/* Background Video Container */}
-      <motion.div
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{ y: videoY }}
-      >
-        <div className="relative w-full h-full scale-110"> {/* Scale prevents edge gaps during parallax */}
-          <iframe
-            suppressHydrationWarning
-            className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2"
-            src="https://www.youtube.com/embed/9uoYBcnOF2c?autoplay=1&mute=1&controls=0&loop=1&playlist=9uoYBcnOF2c&rel=0&showinfo=0&iv_load_policy=3"
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            style={{ border: 'none' }}
-          />
-        </div>
-        {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+    <section
+      ref={ref}
+      data-band="dark"
+      className="relative flex min-h-[92vh] flex-col justify-end overflow-hidden"
+    >
+      <motion.div style={{ y }} className="absolute inset-0 z-0">
+        <HeroVideo mode={reduce ? "poster" : "auto"} />
       </motion.div>
+      <ParticleField className="pointer-events-none absolute inset-0 z-[1]" />
 
-      <div className="relative z-10 px-[clamp(24px,5vw,80px)] pt-[clamp(64px,8vw,100px)] pb-[clamp(48px,6vw,72px)]">
+      <Container className="relative z-10 py-[clamp(56px,9vw,110px)]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.8, ease: easeOutExpo }}
         >
-          <div className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#bbbbbb] leading-[1.3] mb-8">
-            Regenis Life — ELITE MEDICAL SYSTEMS
-          </div>
-
-          <h1 className="font-light leading-[1.15] uppercase tracking-[-0.01em] text-[clamp(40px,6.5vw,96px)] text-white max-w-[900px] mb-10">
-            Clinical Precision.<br />
-            <span className="text-[#1c69d4]">Engineered</span> for Excellence.
+          <Eyebrow className="mb-7 text-ink-inverse-faint">{eyebrow}</Eyebrow>
+          <h1 className="max-w-[16ch] font-display text-[clamp(40px,6.5vw,92px)] font-light leading-[1.08] tracking-[-0.02em] text-ink-inverse text-balance">
+            {title}
           </h1>
-
-          <p className="equipment-page-summary text-[clamp(15px,1.5vw,18px)] font-light leading-[1.55] text-[#bbbbbb] max-w-[520px] mb-14">
-            The world&apos;s most advanced medical equipment platforms. Precision-selected for clinical environments where outcomes define reputation.
+          <p className="mt-8 max-w-[52ch] text-[clamp(15px,1.5vw,18px)] font-light leading-relaxed text-ink-inverse-muted">
+            {summary}
           </p>
-
-          <div className="flex gap-5 flex-wrap items-center">
-            <a
-              href="#featured-devices"
-              className="site-action-secondary"
-            >
-              Explore Equipment
-              <ArrowUpRight size={12} />
-            </a>
-            <Link
+          <div className="mt-11 flex flex-wrap items-center gap-4">
+            <Button href={primary.href} variant="quiet" className="text-ink-inverse">
+              {primary.label}
+              <ArrowUpRight size={13} />
+            </Button>
+            <Button
               href={`mailto:${BUSINESS_EMAIL[0]}`}
-              className="site-action-secondary"
+              variant="quiet"
+              className="text-ink-inverse"
             >
-              Request Consultation
-              <ArrowUpRight size={12} />
-            </Link>
+              Request consultation
+              <ArrowUpRight size={13} />
+            </Button>
           </div>
         </motion.div>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-white/[0.12] z-10" />
+      </Container>
+      <div aria-hidden className="absolute inset-x-0 bottom-0 z-10 h-px bg-line" />
     </section>
   );
 }

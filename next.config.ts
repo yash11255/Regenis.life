@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "etimg.etb2bimg.com" },
       { protocol: "https", hostname: "emaaesthetics.com" },
       { protocol: "https", hostname: "www.btlnet.com" },

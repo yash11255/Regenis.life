@@ -1,55 +1,195 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* ==========================================================================
+   Regenis Life — design tokens ("Clinical warmth")
+   Warm light "paper" canvas + deliberate deep "ground" bands.
+   Every component consumes these; no hardcoded hex anywhere else.
+   ========================================================================== */
+
+@theme {
+  /* Typography (wired to next/font CSS vars set on <html>) */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Surfaces — light */
+  --color-paper: #f7f4ee;
+  --color-raised: #ffffff;
+  --color-sunken: #ede7d9;
+
+  /* Surfaces — dark ground (hero / showcase / footer bands) */
+  --color-ground: #17130f;
+  --color-ground-raised: #221c16;
+  --color-ground-sunken: #0f0c09;
+
+  /* Ink — on light */
+  --color-ink: #211b14;
+  --color-ink-muted: #5a5044;
+  --color-ink-faint: #8b8073;
+
+  /* Ink — on dark */
+  --color-ink-inverse: #f5f1e8;
+  --color-ink-inverse-muted: #b9af9e;
+  --color-ink-inverse-faint: #8a8072;
+
+  /* Lines */
+  --color-line: #e4dccd;
+  --color-line-strong: #d3c7b2;
+  --color-line-inverse: rgba(245, 241, 232, 0.14);
+
+  /* Primary accent — botanical */
+  --color-primary: #35624a;
+  --color-primary-hover: #2a5039;
+  --color-primary-subtle: #e5ede5;
+  --color-primary-on-dark: #97c0a3;
+  --color-primary-contrast: #ffffff;
+
+  /* Secondary accent — warm clay (used sparingly) */
+  --color-accent: #a9552b;
+  --color-accent-subtle: #f4e5d8;
+
+  /* System */
+  --color-focus-ring: #35624a;
+  --color-selection: rgba(53, 98, 74, 0.22);
+
+  /* Motion easings */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring-sm: cubic-bezier(0.18, 0.89, 0.32, 1.28);
+
+  /* Radii */
+  --radius-card: 16px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-raised: 0 1px 2px rgba(33, 27, 20, 0.05), 0 8px 24px rgba(33, 27, 20, 0.07);
+  --shadow-pop: 0 8px 40px rgba(33, 27, 20, 0.14);
+
+  /* Layout */
+  --container-max: 1320px;
+}
+
+/* --------------------------------------------------------------------------
+   z-index scale (reference — keep utilities/inline values in sync):
+   base 0 · raised 10 · sticky/filter 40 · header 100 · overlay/modal 9999 ·
+   skip-link 10000 · particle canvas -1
+   -------------------------------------------------------------------------- */
 
 @layer base {
-  :root {
-    --regenis-950: #050d18;
-    --regenis-900: #071426;
-    --regenis-800: #0c1e33;
-    --regenis-700: #112b47;
-    --regenis-ink: #eef5ff;
-    --regenis-muted: #a8b8ca;
-    --regenis-accent: #3d8cff;
+  /* v4: default border color is currentColor — restore a sane token default */
+  *,
+  ::after,
+  ::before,
+  ::backdrop {
+    border-color: var(--color-line);
+  }
+
+  /* v4: buttons default to cursor:default */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-ink-faint);
   }
 
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background: var(--regenis-900);
-    color: var(--regenis-ink);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  a, button {
-    transition: all 0.3s ease-out;
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--regenis-accent);
-    outline-offset: 3px;
+  a {
+    color: inherit;
   }
 
   ::selection {
-    background: rgba(61, 140, 255, 0.28);
-    color: var(--regenis-ink);
+    background: var(--color-selection);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 3px;
+  }
+
+  /* Dark full-bleed sections: flip ink + lines for descendants */
+  [data-band="dark"] {
+    background: var(--color-ground);
+    color: var(--color-ink-inverse);
+    --color-line: var(--color-line-inverse);
+    --color-ink: var(--color-ink-inverse);
+    --color-ink-muted: var(--color-ink-inverse-muted);
+    --color-ink-faint: var(--color-ink-inverse-faint);
+    --color-primary: var(--color-primary-on-dark);
+    --color-focus-ring: var(--color-primary-on-dark);
   }
 }
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+
+@utility gutter {
+  padding-inline: clamp(20px, 5vw, 80px);
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+  &::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 999px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* Eyebrow / kicker label */
+@utility text-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+/* ==========================================================================
+   Global component bits
+   ========================================================================== */
 
 .skip-link {
   position: fixed;
   top: -100px;
   left: 16px;
   z-index: 10000;
-  padding: 0.75rem 1rem;
-  border-radius: 999px;
-  font-weight: 700;
-  color: #fff;
-  background: #1c69d4;
+  padding: 0.75rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  color: var(--color-primary-contrast);
+  background: var(--color-primary);
   transition: top 0.2s ease;
 }
 
@@ -57,74 +197,47 @@
   top: 16px;
 }
 
-body.mobile-menu-open,
 body.ui-overlay-open {
   overflow: hidden;
 }
 
-.site-action-primary,
-.site-action-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  cursor: pointer;
+/* Subtle dot grid (footer / decorative panels on dark bands) */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(245, 241, 232, 0.05) 1px, transparent 1px);
+  background-size: 34px 34px;
 }
 
-.site-action-primary {
-  gap: 10px;
-  padding: 15px 32px;
-  background: transparent;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.2;
-  border: 1px solid transparent;
-  border-bottom-color: #fff;
+/* Layered bloom for the full-color logo mark over dark bands (hero, footer) —
+   a single drop-shadow reads flat, so this stacks a bright core with two
+   widening, softening halos for a proper glow. */
+.logo-glow {
+  filter:
+    drop-shadow(0 0 5px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 16px rgba(200, 150, 255, 0.65))
+    drop-shadow(0 0 34px rgba(200, 150, 255, 0.4));
 }
 
-.site-action-primary:hover {
-  background: var(--regenis-ink);
-  color: var(--regenis-900);
-  border-color: var(--regenis-ink);
+/* Ambient page wash (behind everything, JS-free) */
+.site-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    radial-gradient(1100px 700px at 78% -8%, rgba(53, 98, 74, 0.06), transparent 60%),
+    radial-gradient(900px 600px at 8% 12%, rgba(169, 85, 43, 0.05), transparent 55%);
 }
 
-.site-action-secondary {
-  gap: 8px;
-  padding-bottom: 2px;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  line-height: 1.3;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.site-action-secondary:hover {
-  color: var(--regenis-accent);
-  border-bottom-color: var(--regenis-accent);
-}
-
-.site-action-secondary--dark {
-  color: var(--regenis-ink);
-  border-bottom-color: rgba(238, 245, 255, 0.4);
-}
-
-.site-action-secondary--dark:hover {
-  color: var(--regenis-accent);
-  border-bottom-color: var(--regenis-accent);
-}
-
+/* Route transition (consumed by app/components/RouteTransition.tsx) */
 .route-transition {
-  animation: route-fade-in 0.55s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-  will-change: opacity, transform;
+  animation: route-fade-in 0.5s var(--ease-out-quint);
+  will-change: opacity;
 }
 
 .route-transition main > * {
   opacity: 0;
-  transform: translateY(22px);
-  animation: section-fade-up 0.65s cubic-bezier(0.2, 0.65, 0.2, 1) forwards;
+  transform: translateY(20px);
+  animation: section-fade-up 0.62s var(--ease-out-expo) forwards;
 }
 
 .route-transition main > *:nth-child(1) { animation-delay: 0.04s; }
@@ -136,24 +249,31 @@ body.ui-overlay-open {
 .route-transition main > *:nth-child(n + 7) { animation-delay: 0.38s; }
 
 @keyframes route-fade-in {
-  from { opacity: 0.88; }
+  from { opacity: 0.9; }
   to { opacity: 1; }
 }
 
 @keyframes section-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(22px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 
   .route-transition,

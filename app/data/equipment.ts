@@ -385,7 +385,6 @@ export const equipmentMockData: Equipment[] = [
       { label: "Width", value: "600 mm" },
       { label: "Height", value: "1120 mm" },
       { label: "Depth", value: "600 mm" },
-      { label: "Supply Vendor", value: "Medikold, GGN" },
     ],
     features: [
       "Mobile trolley design",
@@ -413,7 +412,6 @@ export const equipmentMockData: Equipment[] = [
       { label: "Width", value: "Portable" },
       { label: "Height", value: "Portable" },
       { label: "Depth", value: "Portable" },
-      { label: "Supply Vendor", value: "Medikold, GGN" },
     ],
     features: [
       "Markerless, camera-based 3D movement capture",
@@ -441,7 +439,6 @@ export const equipmentMockData: Equipment[] = [
       { label: "Width", value: "1130 mm" },
       { label: "Height", value: "1150 mm" },
       { label: "Depth", value: "740 mm" },
-      { label: "Supply Vendor", value: "Medikold, GGN" },
     ],
     features: [
       "Multi-position frame for hip adduction/abduction, shoulder, and more",
@@ -689,7 +686,6 @@ export const equipmentMockData: Equipment[] = [
       { label: "Application", value: "Research, development, and demonstrations" },
       { label: "Configuration", value: "G1 EDU U8 + Nvidia AGX Thor enhanced system" },
       { label: "Dimensions", value: "550 × 1680 × 230 mm (W × H × D)" },
-      { label: "Supply Vendor", value: "Medikold, GGN" },
     ],
     features: [
       "Development-oriented EDU configuration",

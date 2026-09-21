@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { easeOutQuint } from "@/lib/motion";
+import { cn } from "@/lib/cn";
 
 interface FilterBarProps {
   categories: { name: string; logo?: string }[];
@@ -15,49 +15,29 @@ export default function FilterBar({ categories, activeCategory, onSelect }: Filt
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-      className="sticky top-0 z-40 bg-[#071426]/90 backdrop-blur-xl border-b border-white/[0.10] overflow-x-auto scrollbar-hide"
+      transition={{ duration: 0.5, ease: easeOutQuint, delay: 0.15 }}
+      className="scrollbar-hide sticky top-0 z-40 overflow-x-auto border-y border-line bg-paper/92 backdrop-blur-xl"
     >
-      <div className="flex items-center px-[clamp(24px,5vw,80px)] min-w-max gap-4">
+      <div className="flex min-w-max items-stretch gutter">
         {categories.map((category) => {
           const isActive = activeCategory === category.name;
-
           return (
             <button
               key={category.name}
+              type="button"
               onClick={() => onSelect(category.name)}
-              className="group relative py-8 px-8 transition-all duration-300 rounded-none"
+              aria-pressed={isActive}
+              className={cn(
+                "group relative whitespace-nowrap px-5 py-5 text-[12px] font-bold uppercase tracking-[0.12em] transition-colors",
+                isActive ? "text-ink" : "text-ink-faint hover:text-ink"
+              )}
             >
-              <div className="relative z-10 flex items-center justify-center">
-                {category.logo ? (
-                  <Image
-                    src={category.logo}
-                    alt={category.name}
-                    width={180}
-                    height={48}
-                    /* BIG SIZE: h-10 (40px) or h-12 (48px) */
-                    className={`h-10 w-auto rounded-md bg-[#dce8f5] px-2 py-1 object-contain transition-all duration-500 ease-[0.22, 1, 0.36, 1] ${isActive
-                        ? 'opacity-100 scale-110'
-                        : 'opacity-100 scale-100 group-hover:scale-105'
-                      }`}
-                  />
-                ) : (
-                  <span className={`text-[11px] font-bold tracking-[0.14em] uppercase ${isActive ? "text-[#eef5ff]" : "text-[#8fa6bd]"
-                    }`}>
-                    {category.name}
-                  </span>
-                )}
-              </div>
-
+              {category.name}
               {isActive && (
-                <motion.div
+                <motion.span
                   layoutId="activeFilter"
-                  className="absolute bottom-0 left-6 right-6 h-[3px] bg-[#1c69d4]"
-                  transition={{
-                    type: "spring",
-                    stiffness: 350,
-                    damping: 30
-                  }}
+                  className="absolute inset-x-4 bottom-0 h-[3px] bg-primary"
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
             </button>

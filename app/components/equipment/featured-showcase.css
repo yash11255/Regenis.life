@@ -1,0 +1,113 @@
+/* ==========================================================================
+   FeaturedShowcase — 3D orbit geometry.
+   Deliberate exception to "utilities only": CSS 3D transform contexts
+   (perspective / preserve-3d / per-frame transform writes) don't express
+   well as Tailwind utilities. Colour comes from design tokens; no @import,
+   no <style> block, no inline style beyond the rAF per-frame writes in the
+   component (documented there).
+   ========================================================================== */
+
+.efs3d-perspective {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  perspective: 900px;
+  perspective-origin: 50% 32%;
+}
+
+@media (min-width: 768px) {
+  .efs3d-perspective {
+    height: 600px;
+    overflow: visible;
+    perspective: 1400px;
+    perspective-origin: 50% 36%;
+  }
+}
+
+.efs3d-orbit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.efs3d-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(158px, 40vw, 208px);
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  cursor: pointer;
+  opacity: 0;
+}
+
+@media (min-width: 768px) {
+  .efs3d-card {
+    width: clamp(232px, 17vw, 292px);
+  }
+}
+
+.efs3d-card-inner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--color-line-inverse);
+  background: color-mix(in srgb, var(--color-ground-raised) 88%, transparent);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(245, 241, 232, 0.06);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+}
+
+.efs3d-card-accent {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    color-mix(in srgb, var(--color-primary) 55%, var(--color-accent))
+  );
+}
+
+.efs3d-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.efs3d-card-media img {
+  object-fit: cover;
+}
+
+.efs3d-card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15, 12, 9, 0.7), transparent 65%);
+}
+
+/* Static entrance for the left info panel */
+@keyframes efs3d-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.efs3d-step {
+  animation: efs3d-fadein 0.4s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .efs3d-step {
+    animation: none;
+  }
+}

@@ -1,84 +1,70 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { cn } from "@/lib/cn";
 
 interface EquipmentCarouselProps {
   images: string[];
   alt: string;
 }
 
+const BLUR =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjYiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjYiIGZpbGw9IiNlZGU3ZDkiLz48L3N2Zz4=";
+
 export default function EquipmentCarousel({ images, alt }: EquipmentCarouselProps) {
+  const reduce = useReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState(0); // -1 for left, 1 for right
+  const [direction, setDirection] = useState(0);
 
   useEffect(() => {
-    if (images.length <= 1) return;
+    if (images.length <= 1 || reduce) return;
     const timer = setInterval(() => {
       setDirection(1);
       setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     }, 6000);
     return () => clearInterval(timer);
-  }, [images.length]);
+  }, [images.length, reduce]);
 
   if (!images || images.length === 0) return null;
 
-  const handlePrev = (e?: React.MouseEvent) => {
-    if (e) e.preventDefault();
-    setDirection(-1);
-    setActiveIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const go = (next: number, dir: number) => {
+    setDirection(dir);
+    setActiveIndex(next);
   };
+  const handlePrev = () =>
+    go(activeIndex === 0 ? images.length - 1 : activeIndex - 1, -1);
+  const handleNext = () =>
+    go(activeIndex === images.length - 1 ? 0 : activeIndex + 1, 1);
 
-  const handleNext = (e?: React.MouseEvent) => {
-    if (e) e.preventDefault();
-    setDirection(1);
-    setActiveIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  const handleDotClick = (index: number, e?: React.MouseEvent) => {
-    if (e) e.preventDefault();
-    setDirection(index > activeIndex ? 1 : -1);
-    setActiveIndex(index);
-  };
-
-  // If there's only 1 image, just render it simply
   if (images.length === 1) {
     return (
-      <div className="relative w-full h-full min-h-[400px] lg:min-h-[520px] bg-[#071426]">
+      <div className="relative h-full min-h-[380px] bg-sunken lg:min-h-[520px]">
         <Image
           src={images[0]}
           alt={alt}
           fill
           priority
+          placeholder="blur"
+          blurDataURL={BLUR}
           sizes="(max-width: 1024px) 100vw, 50vw"
-          className="object-cover transition-all duration-700 filter grayscale-[15%] contrast-[1.06]"
+          className="object-cover"
         />
       </div>
     );
   }
 
-  // Slide transition variants
   const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? "100%" : "-100%",
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (dir: number) => ({
-      x: dir < 0 ? "100%" : "-100%",
-      opacity: 0,
-    }),
+    enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir < 0 ? "100%" : "-100%", opacity: 0 }),
   };
 
   return (
-    <div className="relative w-full h-full min-h-[480px] lg:min-h-[580px] bg-[#071426] overflow-hidden group select-none flex flex-col">
-      {/* Main Slide view */}
-      <div className="relative flex-1 w-full min-h-[400px] lg:min-h-[480px] overflow-hidden">
+    <div className="group relative flex h-full min-h-[460px] flex-col overflow-hidden bg-sunken select-none lg:min-h-[560px]">
+      <div className="relative min-h-[380px] flex-1 overflow-hidden lg:min-h-[460px]">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={activeIndex}
@@ -91,75 +77,82 @@ export default function EquipmentCarousel({ images, alt }: EquipmentCarouselProp
               x: { type: "spring", stiffness: 300, damping: 30 },
               opacity: { duration: 0.35 },
             }}
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0"
           >
             <Image
               src={images[activeIndex]}
-              alt={`${alt} slide ${activeIndex + 1}`}
+              alt={`${alt} — image ${activeIndex + 1}`}
               fill
-              priority
+              priority={activeIndex === 0}
+              loading={activeIndex === 0 ? undefined : "lazy"}
+              placeholder="blur"
+              blurDataURL={BLUR}
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover filter grayscale-[10%] contrast-[1.05]"
+              className="object-cover"
             />
           </motion.div>
         </AnimatePresence>
 
-        {/* Ambient Dark Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ground/40 to-transparent"
+        />
 
-        {/* Floating Arrows */}
         <button
           type="button"
           onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-white transition-all duration-300 rounded-full opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center hover:scale-105 z-10 cursor-pointer"
           aria-label="Previous image"
+          className="absolute left-4 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full border border-ink-inverse/20 bg-ground/30 p-3 text-ink-inverse backdrop-blur-md transition hover:bg-ground/50 lg:opacity-0 lg:group-hover:opacity-100 focus-visible:opacity-100"
         >
           <ChevronLeft size={20} />
         </button>
-
         <button
           type="button"
           onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-white transition-all duration-300 rounded-full opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center hover:scale-105 z-10 cursor-pointer"
           aria-label="Next image"
+          className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full border border-ink-inverse/20 bg-ground/30 p-3 text-ink-inverse backdrop-blur-md transition hover:bg-ground/50 lg:opacity-0 lg:group-hover:opacity-100 focus-visible:opacity-100"
         >
           <ChevronRight size={20} />
         </button>
 
-        {/* Dot Indicators */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2.5 z-10 bg-black/35 backdrop-blur-md px-4 py-2 border border-white/10 rounded-full">
+        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-2.5 rounded-full border border-ink-inverse/10 bg-ground/35 px-4 py-2 backdrop-blur-md">
           {images.map((_, idx) => (
             <button
               key={idx}
               type="button"
-              onClick={(e) => handleDotClick(idx, e)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                idx === activeIndex ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
-              }`}
-              aria-label={`Go to slide ${idx + 1}`}
+              onClick={() => go(idx, idx > activeIndex ? 1 : -1)}
+              aria-label={`Go to image ${idx + 1}`}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                idx === activeIndex
+                  ? "w-6 bg-ink-inverse"
+                  : "w-1.5 bg-ink-inverse/40 hover:bg-ink-inverse/70"
+              )}
             />
           ))}
         </div>
       </div>
 
-      {/* Premium Thumbnail bar */}
-      <div className="bg-[#071426] border-t border-white/[0.08] px-4 py-3 flex justify-start gap-3 overflow-x-auto scrollbar-none min-h-[76px]">
+      <div className="scrollbar-thin flex min-h-[72px] justify-start gap-3 overflow-x-auto border-t border-line bg-sunken px-4 py-3">
         {images.map((img, idx) => (
           <button
             key={idx}
             type="button"
-            onClick={(e) => handleDotClick(idx, e)}
-            className={`relative w-16 h-12 flex-shrink-0 transition-all duration-300 border overflow-hidden rounded-none cursor-pointer ${
+            onClick={() => go(idx, idx > activeIndex ? 1 : -1)}
+            aria-label={`Show image ${idx + 1}`}
+            className={cn(
+              "relative h-12 w-16 flex-shrink-0 overflow-hidden border transition-all duration-300",
               idx === activeIndex
-                ? "border-[#1c69d4] scale-[1.03] ring-1 ring-[#1c69d4]/30"
-                : "border-white/10 opacity-50 hover:opacity-100"
-            }`}
+                ? "border-primary ring-1 ring-primary/30"
+                : "border-line opacity-55 hover:opacity-100"
+            )}
           >
             <Image
               src={img}
-              alt={`${alt} thumbnail ${idx + 1}`}
+              alt=""
               fill
               sizes="64px"
+              loading="lazy"
               className="object-cover"
             />
           </button>
