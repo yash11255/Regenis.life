@@ -2,8 +2,14 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Mail } from "lucide-react";
-import { BUSINESS_EMAIL, BUSINESS_NAME, BUSINESS_PHONE } from "@/lib/business-config";
+import { Instagram, Linkedin, Mail, Phone } from "lucide-react";
+import {
+  BUSINESS_EMAIL,
+  BUSINESS_INSTAGRAM_URL,
+  BUSINESS_LINKEDIN_URL,
+  BUSINESS_NAME,
+  BUSINESS_PHONE,
+} from "@/lib/business-config";
 import { CATEGORIES } from "@/app/data/categories";
 import Image from "next/image";
 import { fadeUp, viewportOnce } from "@/lib/motion";
@@ -35,7 +41,7 @@ export default function SiteFooter() {
                 alt="Regenis Life"
                 width={2062}
                 height={763}
-                className="logo-glow h-20 w-auto object-contain md:h-24"
+                className="logo-on-white h-20 w-auto object-contain md:h-24"
               />
             </Link>
             <p className="mt-5 max-w-[320px] text-[14px] leading-[1.75] text-ink-inverse-muted">
@@ -71,11 +77,30 @@ export default function SiteFooter() {
             {BUSINESS_PHONE[0] && (
               <a
                 href={`tel:${BUSINESS_PHONE[0].replace(/\s+/g, "")}`}
-                className="text-[13px] text-ink-inverse-muted transition-colors hover:text-ink-inverse"
+                className="inline-flex items-center gap-2.5 text-[13px] text-ink-inverse-muted transition-colors hover:text-ink-inverse"
               >
+                <Phone size={15} className="text-primary-on-dark" />
                 {BUSINESS_PHONE[0]}
               </a>
             )}
+            <a
+              href={BUSINESS_LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 text-[13px] text-ink-inverse-muted transition-colors hover:text-ink-inverse"
+            >
+              <Linkedin size={15} className="text-primary-on-dark" />
+              LinkedIn
+            </a>
+            <a
+              href={BUSINESS_INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 text-[13px] text-ink-inverse-muted transition-colors hover:text-ink-inverse"
+            >
+              <Instagram size={15} className="text-primary-on-dark" />
+              Instagram
+            </a>
           </FooterColumn>
         </div>
 

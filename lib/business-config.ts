@@ -13,13 +13,14 @@ export const BUSINESS_LOGO = `${BUSINESS_URL}/Regenis.png`;
 export const BUSINESS_IMAGE = `${BUSINESS_URL}/Regenis.png`;
 
 export const BUSINESS_EMAIL = ["hello@regenis.life"];
-export const BUSINESS_PHONE: string[] = [];
+export const BUSINESS_PHONE = ["+91 98187 64422"];
+export const BUSINESS_LINKEDIN_URL = "https://www.linkedin.com/company/regenis-life/";
+export const BUSINESS_INSTAGRAM_URL = "https://www.instagram.com/regenis.life/";
 
 export const BUSINESS_DESCRIPTION =
   "Regenis Life curates medical and wellness equipment for clinical facilities, including hyperbaric chambers, aesthetic platforms, rehabilitation systems, diagnostics, recovery technologies, and robotics.";
 
-// TODO: replace with real social handles once created
-export const BUSINESS_SOCIAL_LINKS: string[] = [];
+export const BUSINESS_SOCIAL_LINKS = [BUSINESS_LINKEDIN_URL, BUSINESS_INSTAGRAM_URL];
 
 export const BUSINESS_GEO = {
   country: "IN",

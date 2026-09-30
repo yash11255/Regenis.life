@@ -207,14 +207,11 @@ body.ui-overlay-open {
   background-size: 34px 34px;
 }
 
-/* Layered bloom for the full-color logo mark over dark bands (hero, footer) —
-   a single drop-shadow reads flat, so this stacks a bright core with two
-   widening, softening halos for a proper glow. */
-.logo-glow {
-  filter:
-    drop-shadow(0 0 5px rgba(255, 255, 255, 0.95))
-    drop-shadow(0 0 16px rgba(200, 150, 255, 0.65))
-    drop-shadow(0 0 34px rgba(200, 150, 255, 0.4));
+/* Clean white plate for the full-color logo over dark bands. */
+.logo-on-white {
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.625rem;
+  background: #fff;
 }
 
 /* Ambient page wash (behind everything, JS-free) */

@@ -80,9 +80,7 @@ export default function SiteHeader() {
               priority
               className={cn(
                 "h-16 w-auto object-contain transition md:h-[76px]",
-                // Full-color logo — a layered glow keeps it clearly visible
-                // while floating over the dark hero.
-                inverse && "logo-glow"
+                inverse && "logo-on-white"
               )}
             />
           </Link>

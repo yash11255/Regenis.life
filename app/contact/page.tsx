@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import Section from "../components/ui/Section";
 import Container from "../components/ui/Container";
 import Eyebrow from "../components/ui/Eyebrow";
@@ -10,6 +10,8 @@ import {
   BUSINESS_NAME,
   BUSINESS_URL,
   BUSINESS_EMAIL,
+  BUSINESS_INSTAGRAM_URL,
+  BUSINESS_LINKEDIN_URL,
   BUSINESS_PHONE,
 } from "@/lib/business-config";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
@@ -95,6 +97,28 @@ export default function ContactPage() {
               <li className="flex items-start gap-3.5">
                 <MapPin size={18} className="mt-0.5 flex-shrink-0 text-primary" />
                 <span className="text-[15px] text-ink-muted">India</span>
+              </li>
+              <li className="flex items-start gap-3.5">
+                <Linkedin size={18} className="mt-0.5 flex-shrink-0 text-primary" />
+                <a
+                  href={BUSINESS_LINKEDIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[15px] text-ink transition-colors hover:text-primary"
+                >
+                  LinkedIn
+                </a>
+              </li>
+              <li className="flex items-start gap-3.5">
+                <Instagram size={18} className="mt-0.5 flex-shrink-0 text-primary" />
+                <a
+                  href={BUSINESS_INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[15px] text-ink transition-colors hover:text-primary"
+                >
+                  Instagram
+                </a>
               </li>
             </ul>
             <p className="mt-8 max-w-[42ch] text-[13px] font-light leading-relaxed text-ink-faint">
