@@ -25,12 +25,17 @@ function imageXml(image: string) {
 
 function urlXml(
   loc: string,
-  opts: { changefreq?: string; priority?: string; extra?: string } = {}
+  opts: { changefreq?: string; priority?: string; extra?: string; lastmod?: string } = {}
 ) {
-  const { changefreq = "monthly", priority = "0.6", extra = "" } = opts;
+  const {
+    changefreq = "monthly",
+    priority = "0.6",
+    extra = "",
+    lastmod = SEO_LAST_MODIFIED,
+  } = opts;
   return `<url>
   <loc>${loc}</loc>
-  <lastmod>${SEO_LAST_MODIFIED}</lastmod>
+  <lastmod>${lastmod}</lastmod>
   <changefreq>${changefreq}</changefreq>
   <priority>${priority}</priority>
   ${extra}
@@ -62,6 +67,21 @@ export function GET() {
     urlXml(`${BUSINESS_URL}/equipment/all`, { changefreq: "weekly", priority: "0.8" }),
     urlXml(`${BUSINESS_URL}/about`, { changefreq: "monthly", priority: "0.6" }),
     urlXml(`${BUSINESS_URL}/contact`, { changefreq: "monthly", priority: "0.6" }),
+    urlXml(`${BUSINESS_URL}/privacy`, {
+      changefreq: "yearly",
+      priority: "0.3",
+      lastmod: "2026-09-30T00:00:00+05:30",
+    }),
+    urlXml(`${BUSINESS_URL}/terms`, {
+      changefreq: "yearly",
+      priority: "0.3",
+      lastmod: "2026-09-30T00:00:00+05:30",
+    }),
+    urlXml(`${BUSINESS_URL}/disclaimer`, {
+      changefreq: "yearly",
+      priority: "0.3",
+      lastmod: "2026-09-30T00:00:00+05:30",
+    }),
   ].join("\n");
 
   const categoryUrls = CATEGORIES.map((c) =>

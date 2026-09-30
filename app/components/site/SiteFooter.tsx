@@ -21,6 +21,12 @@ const EXPLORE = [
   { label: "Contact", href: "/contact" },
 ];
 
+const LEGAL = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Use", href: "/terms" },
+  { label: "Medical Disclaimer", href: "/disclaimer" },
+];
+
 export default function SiteFooter() {
   const year = new Date().getFullYear();
 
@@ -104,7 +110,7 @@ export default function SiteFooter() {
           </FooterColumn>
         </div>
 
-        <div className="mt-[clamp(36px,5vw,56px)] border-t border-line pt-8">
+        <div className="mt-[clamp(36px,5vw,56px)] flex flex-col gap-5 border-t border-line pt-8 md:flex-row md:items-center md:justify-between">
           <p className="text-[12px] text-ink-inverse-faint">
             &copy; {year}{" "}
             <Link href="/" className="text-primary-on-dark hover:text-ink-inverse">
@@ -112,6 +118,17 @@ export default function SiteFooter() {
             </Link>
             . All rights reserved.
           </p>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-2">
+            {LEGAL.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-[12px] text-ink-inverse-faint transition-colors hover:text-ink-inverse"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>
