@@ -1,10 +1,12 @@
 import { visibleEquipment } from "../data/equipment";
 import { CATEGORIES } from "../data/categories";
 import { BUSINESS_EMAIL, BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { fetchBlogPosts } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
-export function GET() {
+export async function GET() {
+  const blog = await fetchBlogPosts({ page: 1, limit: 100 });
   const productEntries = visibleEquipment
     .map((equipment) => {
       const description = equipment.fullDescription || equipment.description;
@@ -33,6 +35,7 @@ export function GET() {
     `- Full equipment catalog: ${BUSINESS_URL}/equipment/all`,
     `- About: ${BUSINESS_URL}/about`,
     `- Contact: ${BUSINESS_URL}/contact`,
+    `- Insights: ${BUSINESS_URL}/blog`,
     `- Privacy policy: ${BUSINESS_URL}/privacy`,
     `- Terms of use: ${BUSINESS_URL}/terms`,
     `- Medical and product disclaimer: ${BUSINESS_URL}/disclaimer`,
@@ -42,6 +45,16 @@ export function GET() {
     ...CATEGORIES.map(
       (c) => `- ${c.name}: ${BUSINESS_URL}/equipment/category/${c.slug} — ${c.blurb}`
     ),
+    ...(blog.data.length
+      ? [
+          "",
+          "## Latest insights",
+          ...blog.data.map(
+            (post) =>
+              `- ${post.title}: ${BUSINESS_URL}/blog/${post.slug}${post.excerpt ? ` — ${post.excerpt}` : ""}`
+          ),
+        ]
+      : []),
     "",
     "## Equipment catalog",
     "The following product names, descriptions, images, and URLs are the authoritative catalog content published by Regenis Life:",

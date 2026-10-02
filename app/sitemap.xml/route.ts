@@ -2,6 +2,7 @@ import { BUSINESS_URL } from "@/lib/business-config";
 import { SEO_LAST_MODIFIED } from "@/lib/seo-content";
 import { visibleEquipment } from "../data/equipment";
 import { CATEGORIES } from "../data/categories";
+import { fetchAllBlogSlugs, fetchBlogPaginationParams } from "@/lib/blog";
 
 const HERO_VIDEO_ID = "9uoYBcnOF2c";
 const XML_CONTENT_TYPE = "application/xml; charset=utf-8";
@@ -45,7 +46,11 @@ function urlXml(
 export const dynamic = "force-static";
 export const revalidate = 3600;
 
-export function GET() {
+export async function GET() {
+  const [blogPosts, blogPages] = await Promise.all([
+    fetchAllBlogSlugs(),
+    fetchBlogPaginationParams(),
+  ]);
   const staticUrls = [
     urlXml(BUSINESS_URL, {
       changefreq: "weekly",
@@ -67,6 +72,7 @@ export function GET() {
     urlXml(`${BUSINESS_URL}/equipment/all`, { changefreq: "weekly", priority: "0.8" }),
     urlXml(`${BUSINESS_URL}/about`, { changefreq: "monthly", priority: "0.6" }),
     urlXml(`${BUSINESS_URL}/contact`, { changefreq: "monthly", priority: "0.6" }),
+    urlXml(`${BUSINESS_URL}/blog`, { changefreq: "weekly", priority: "0.8" }),
     urlXml(`${BUSINESS_URL}/privacy`, {
       changefreq: "yearly",
       priority: "0.3",
@@ -101,11 +107,32 @@ export function GET() {
     )
     .join("\n");
 
+  const blogPageUrls = blogPages
+    .map(({ page }) =>
+      urlXml(`${BUSINESS_URL}/blog/page/${page}`, {
+        changefreq: "weekly",
+        priority: "0.5",
+      })
+    )
+    .join("\n");
+
+  const blogPostUrls = blogPosts
+    .map(({ slug, updatedAt }) =>
+      urlXml(`${BUSINESS_URL}/blog/${slug}`, {
+        changefreq: "monthly",
+        priority: "0.7",
+        ...(updatedAt ? { lastmod: updatedAt } : {}),
+      })
+    )
+    .join("\n");
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 ${staticUrls}
 ${categoryUrls}
 ${productUrls}
+${blogPageUrls}
+${blogPostUrls}
 </urlset>`;
 
   return new Response(xml, {

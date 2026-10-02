@@ -201,6 +201,45 @@ body.ui-overlay-open {
   overflow: hidden;
 }
 
+/* CMS-authored long-form articles. Kept global so sanitized HTML receives
+   the same readable rhythm without coupling the editor to presentation. */
+.blog-content {
+  max-width: 74ch;
+  color: var(--color-ink-muted);
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.85;
+}
+
+.blog-content > :first-child { margin-top: 0; }
+.blog-content > :last-child { margin-bottom: 0; }
+.blog-content h2,
+.blog-content h3 { scroll-margin-top: 9rem; color: var(--color-ink); font-family: var(--font-display); font-weight: 300; line-height: 1.18; text-wrap: balance; }
+.blog-content h2 { margin-block: 3.25rem 1rem; font-size: clamp(1.85rem, 4vw, 2.65rem); }
+.blog-content h3 { margin-block: 2.25rem 0.75rem; font-size: clamp(1.4rem, 3vw, 1.85rem); }
+.blog-content p,
+.blog-content ul,
+.blog-content ol,
+.blog-content blockquote,
+.blog-content table,
+.blog-content pre { margin-block: 1.15rem; }
+.blog-content ul,
+.blog-content ol { padding-left: 1.4rem; }
+.blog-content ul { list-style: disc; }
+.blog-content ol { list-style: decimal; }
+.blog-content li { margin-block: 0.45rem; padding-left: 0.25rem; }
+.blog-content strong { color: var(--color-ink); font-weight: 650; }
+.blog-content a { color: var(--color-primary); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.blog-content a:hover { color: var(--color-primary-hover); }
+.blog-content blockquote { border: 1px solid var(--color-line-strong); border-radius: var(--radius-card); background: var(--color-raised); padding: 1.25rem 1.5rem; color: var(--color-ink); font-family: var(--font-display); font-size: 1.2rem; line-height: 1.65; }
+.blog-content img { display: block; width: 100%; height: auto; margin-block: 2rem; border-radius: var(--radius-card); box-shadow: var(--shadow-raised); }
+.blog-content table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 0.9rem; }
+.blog-content th,
+.blog-content td { min-width: 9rem; border: 1px solid var(--color-line); padding: 0.75rem; text-align: left; vertical-align: top; }
+.blog-content th { background: var(--color-sunken); color: var(--color-ink); font-weight: 650; }
+.blog-content pre { overflow-x: auto; border-radius: var(--radius-card); background: var(--color-ground); padding: 1.25rem; color: var(--color-ink-inverse); font-size: 0.875rem; }
+.blog-content :not(pre) > code { border-radius: 0.25rem; background: var(--color-sunken); padding: 0.15rem 0.35rem; color: var(--color-ink); font-size: 0.9em; }
+
 /* Subtle dot grid (footer / decorative panels on dark bands) */
 .dot-grid {
   background-image: radial-gradient(circle, rgba(245, 241, 232, 0.05) 1px, transparent 1px);

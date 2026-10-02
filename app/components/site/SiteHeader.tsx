@@ -14,6 +14,7 @@ import InquiryModal from "../equipment/InquiryModal";
 const NAV_ITEMS = [
   { label: "Equipment", href: "/equipment" },
   { label: "Full Catalog", href: "/equipment/all" },
+  { label: "Insights", href: "/blog" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];

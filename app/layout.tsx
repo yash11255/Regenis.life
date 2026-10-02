@@ -103,6 +103,7 @@ export default function RootLayout({
     [
       { name: "Equipment", url: `${BUSINESS_URL}/equipment` },
       { name: "Full Catalog", url: `${BUSINESS_URL}/equipment/all` },
+      { name: "Insights", url: `${BUSINESS_URL}/blog` },
       { name: "About", url: `${BUSINESS_URL}/about` },
       { name: "Contact", url: `${BUSINESS_URL}/contact` },
     ],
