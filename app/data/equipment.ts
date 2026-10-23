@@ -699,6 +699,8 @@ export const equipmentMockData: Equipment[] = [
     id: "25",
     partner: "Ammortal",
     name: "Zero Gravity Therapy Bed",
+    // Temporarily remove this equipment from the public portfolio.
+    isHidden: true,
     category: "Recovery & Regeneration",
     manufacturer: "Ammortal",
     quantity: 1,
