@@ -37,7 +37,7 @@ export default function InquiryForm({
     e.preventDefault();
     if (!fullName || !email || !phone) return;
     setSubmitting(true);
-    await submitLead("Equipment Inquiry", {
+    const opened = await submitLead(equipmentName ? "Equipment Inquiry" : "Contact Form", {
       fullName,
       email,
       phone,
@@ -45,8 +45,10 @@ export default function InquiryForm({
       product: equipmentName || "General Inquiry",
     });
     setSubmitting(false);
-    setSubmitted(true);
-    onSuccess?.();
+    if (opened) {
+      setSubmitted(true);
+      onSuccess?.();
+    }
   };
 
   if (submitted) {
@@ -55,15 +57,11 @@ export default function InquiryForm({
         <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-primary/25 bg-primary-subtle">
           <Check size={26} className="text-primary" />
         </div>
-        <h3 className="font-display text-[22px] font-light text-ink">Inquiry received</h3>
+        <h3 className="font-display text-[22px] font-light text-ink">WhatsApp message prepared</h3>
         <p className="mt-3 max-w-sm text-[14px] leading-relaxed text-ink-muted">
-          Thank you, <span className="font-semibold text-ink">{fullName}</span>. A Regenis
-          Life representative will follow up with clinical data, pricing, and availability
-          for{" "}
-          <span className="font-semibold text-primary">
-            {equipmentName || "your enquiry"}
-          </span>
-          .
+          Thank you, <span className="font-semibold text-ink">{fullName}</span>. Review the
+          message in WhatsApp and tap Send to submit your enquiry about{" "}
+          <span className="font-semibold text-primary">{equipmentName || "Regenis Life"}</span>.
         </p>
       </div>
     );
@@ -148,7 +146,7 @@ export default function InquiryForm({
       </div>
 
       <Button type="submit" size="md" disabled={submitting} className="w-full">
-        {submitting ? "Sending…" : "Submit inquiry"}
+        {submitting ? "Opening…" : "Continue to WhatsApp"}
       </Button>
     </form>
   );

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import BlogFAQ from "@/app/components/blog/BlogFAQ";
 import BlogSidebar from "@/app/components/blog/BlogSidebar";
 import BlogImage from "@/app/components/blog/BlogImage";
+import BlogLeadPopup from "@/app/components/blog/BlogLeadPopup";
 import { SchemaScript } from "@/app/components/SchemaScript";
 import {
   absoluteUrl,
@@ -152,6 +153,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <BlogSidebar currentPostSlug={post.slug} latestPosts={latest.data} topics={post.tags || keywordsFor(post.keywords).slice(0, 6)} />
         </div>
       </article>
+      <BlogLeadPopup brand="Regenis Life" postTitle={post.title} whatsappNumber="919818764422" accent="#275b49" heading="Ask about this equipment" />
     </main>
   );
 }

@@ -2,9 +2,8 @@
  * Regenis Life — Business Configuration
  * Centralized business details used across schema/SEO metadata.
  *
- * NOTE: This project was extracted from the Medikold equipment showcase as
- * a standalone site for Regenis Life. The values below are placeholders —
- * swap in the real phone / email / address / social links before launch.
+ * The enquiry phone number was confirmed for WhatsApp by the site owner.
+ * Verify the remaining contact and social details independently before changing them.
  */
 
 export const BUSINESS_NAME = "Regenis Life";
