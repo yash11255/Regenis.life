@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 
 type Props = {
   brand: string;
@@ -19,8 +20,11 @@ export default function BlogLeadPopup({
   heading = "Have a question about this article?",
 }: Props) {
   const id = useId();
+  const [mounted, setMounted] = useState(false);
   const [mode, setMode] = useState<"hidden" | "popup" | "reopen">("hidden");
   const storageKey = `blog-enquiry-prompt:${brand}`;
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     try {
@@ -40,6 +44,13 @@ export default function BlogLeadPopup({
     };
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [mode]);
+
+  useEffect(() => {
+    if (mode !== "popup") return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
   }, [mode]);
 
   function dismiss() {
@@ -74,20 +85,20 @@ export default function BlogLeadPopup({
     dismiss();
   }
 
-  if (mode === "hidden") return null;
+  if (!mounted || mode === "hidden") return null;
 
-  if (mode === "reopen") return (
+  if (mode === "reopen") return createPortal(
     <button type="button" onClick={() => setMode("popup")}
-      style={{ position: "fixed", bottom: 20, left: 20, zIndex: 80, border: 0, borderRadius: 999, padding: "12px 18px", background: accent, color: "white", fontWeight: 700, boxShadow: "0 8px 24px #0002", cursor: "pointer" }}>
+      style={{ position: "fixed", bottom: 20, left: 20, zIndex: 2147483645, border: 0, borderRadius: 999, padding: "12px 18px", background: accent, color: "white", fontWeight: 700, boxShadow: "0 8px 24px #0002", cursor: "pointer" }}>
       Ask about this article
-    </button>
+    </button>, document.body
   );
 
-  return (
+  return createPortal(
     <div role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) dismiss(); }}
-      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "#0b1734a6" }}>
+      style={{ position: "fixed", inset: 0, zIndex: 2147483646, display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box", padding: 16, background: "#0b1734a6" }}>
       <section role="dialog" aria-modal="true" aria-labelledby={`${id}-title`}
-        style={{ width: "100%", maxWidth: 440, maxHeight: "calc(100dvh - 32px)", overflowY: "auto", position: "relative", borderRadius: 22, background: "#fff", padding: "30px 28px", boxShadow: "0 24px 80px #0004", fontFamily: "system-ui, sans-serif" }}>
+        style={{ width: "100%", maxWidth: 440, maxHeight: "calc(100dvh - 32px)", overflowY: "auto", boxSizing: "border-box", position: "relative", borderRadius: 22, background: "#fff", padding: "30px 28px", boxShadow: "0 24px 80px #0004", fontFamily: "system-ui, sans-serif" }}>
         <button type="button" onClick={dismiss} aria-label="Close enquiry form"
           style={{ position: "absolute", top: 14, right: 14, width: 36, height: 36, border: 0, borderRadius: 18, background: "#f1f3f6", color: "#223047", fontSize: 22, cursor: "pointer" }}>×</button>
         <p style={{ color: accent, fontSize: 12, fontWeight: 800, letterSpacing: ".1em", textTransform: "uppercase", margin: "0 0 8px" }}>{brand}</p>
@@ -104,6 +115,6 @@ export default function BlogLeadPopup({
           <p style={{ color: "#64748b", fontSize: 12, lineHeight: 1.45, margin: 0 }}>WhatsApp opens with your message ready. Review it and tap Send to submit your enquiry.</p>
         </form>
       </section>
-    </div>
+    </div>, document.body
   );
 }
