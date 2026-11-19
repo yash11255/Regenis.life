@@ -266,26 +266,31 @@ body.ui-overlay-open {
 
 /* Route transition (consumed by app/components/RouteTransition.tsx) */
 .route-transition {
-  animation: route-fade-in 0.5s var(--ease-out-quint);
-  will-change: opacity;
+  animation: route-fade-in 0.4s var(--ease-out-quint);
 }
 
-.route-transition main > * {
+.route-transition main > :not(script) {
   opacity: 0;
   transform: translateY(20px);
   animation: section-fade-up 0.62s var(--ease-out-expo) forwards;
 }
 
-.route-transition main > *:nth-child(1) { animation-delay: 0.04s; }
-.route-transition main > *:nth-child(2) { animation-delay: 0.1s; }
-.route-transition main > *:nth-child(3) { animation-delay: 0.16s; }
-.route-transition main > *:nth-child(4) { animation-delay: 0.22s; }
-.route-transition main > *:nth-child(5) { animation-delay: 0.28s; }
-.route-transition main > *:nth-child(6) { animation-delay: 0.34s; }
-.route-transition main > *:nth-child(n + 7) { animation-delay: 0.38s; }
+.route-transition main > :first-child:not(script),
+.route-transition main > script:first-child + *,
+.route-transition main > article {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+.route-transition main > *:nth-child(3) { animation-delay: 0.08s; }
+.route-transition main > *:nth-child(4) { animation-delay: 0.14s; }
+.route-transition main > *:nth-child(5) { animation-delay: 0.2s; }
+.route-transition main > *:nth-child(6) { animation-delay: 0.26s; }
+.route-transition main > *:nth-child(n + 7) { animation-delay: 0.32s; }
 
 @keyframes route-fade-in {
-  from { opacity: 0.9; }
+  from { opacity: 0.96; }
   to { opacity: 1; }
 }
 

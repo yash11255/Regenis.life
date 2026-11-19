@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import LegalPage from "../components/legal/LegalPage";
 import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_EMAIL, BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
 
 const PAGE_URL = `${BUSINESS_URL}/privacy`;
@@ -10,18 +11,11 @@ const LAST_UPDATED_LABEL = "September 30, 2026";
 const PAGE_DESCRIPTION =
   "Read how Regenis Life collects, uses, stores, and protects personal information submitted through equipment enquiries and website interactions.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Privacy Policy",
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/privacy" },
-  openGraph: {
-    title: "Privacy Policy | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    url: "/privacy",
-    type: "website",
-    images: [{ url: "/Regenis.png", alt: "Regenis Life" }],
-  },
-};
+  canonicalPath: "/privacy",
+});
 
 export default function PrivacyPage() {
   const webPageSchema = generateWebPageSchema({

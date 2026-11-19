@@ -48,12 +48,13 @@ export default function SiteFooter() {
                 alt="Regenis Life"
                 width={2062}
                 height={763}
+                sizes="(max-width: 768px) 220px, 260px"
                 className="logo-on-white h-20 w-auto object-contain md:h-24"
               />
             </Link>
             <p className="mt-5 max-w-[320px] text-[14px] leading-[1.75] text-ink-inverse-muted">
-              A curated portfolio of clinically precise, globally certified medical and
-              wellness equipment for facilities that measure themselves by outcomes.
+              Curated clinical, diagnostics, recovery, and wellness equipment from global
+              manufacturers for professional facilities across India.
             </p>
           </motion.div>
 

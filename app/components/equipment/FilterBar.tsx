@@ -13,7 +13,7 @@ interface FilterBarProps {
 export default function FilterBar({ categories, activeCategory, onSelect }: FilterBarProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -10 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: easeOutQuint, delay: 0.15 }}
       className="scrollbar-hide sticky top-0 z-40 overflow-x-auto border-y border-line bg-paper/92 backdrop-blur-xl"

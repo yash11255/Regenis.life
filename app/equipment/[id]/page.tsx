@@ -11,10 +11,12 @@ import Container from "../../components/ui/Container";
 import Badge from "../../components/ui/Badge";
 import { SchemaScript } from "../../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import {
   generateBreadcrumbSchema,
   generateMedicalDeviceSchema,
   generateWebPageSchema,
+  isNonClinicalEquipment,
 } from "@/lib/schema";
 import { SEO_LAST_MODIFIED } from "@/lib/seo-content";
 
@@ -32,27 +34,20 @@ export async function generateMetadata({
   const { id } = await params;
   const equipment = visibleEquipment.find((eq) => eq.id === id);
   if (!equipment) {
-    return { title: "Equipment Not Found", robots: { index: false, follow: false } };
+    return buildPageMetadata({
+      title: "Equipment Not Found",
+      description: "The requested Regenis Life equipment page could not be found.",
+      robots: { index: false, follow: false },
+    });
   }
-  const socialTitle = `${equipment.name} | ${equipment.partner}`;
-  return {
+  const socialTitle = `${equipment.name} | ${equipment.partner} | ${BUSINESS_NAME}`;
+  return buildPageMetadata({
     title: equipment.name,
+    ogTitle: socialTitle,
     description: equipment.description,
-    alternates: { canonical: `/equipment/${equipment.id}` },
-    openGraph: {
-      title: socialTitle,
-      description: equipment.description,
-      url: `${BUSINESS_URL}/equipment/${equipment.id}`,
-      type: "website",
-      images: [{ url: equipment.image, alt: equipment.name }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: socialTitle,
-      description: equipment.description,
-      images: [equipment.image],
-    },
-  };
+    canonicalPath: `/equipment/${equipment.id}`,
+    images: [{ url: equipment.image, alt: equipment.name }],
+  });
 }
 
 export default async function EquipmentDetailPage({ params }: EquipmentDetailPageProps) {
@@ -62,6 +57,8 @@ export default async function EquipmentDetailPage({ params }: EquipmentDetailPag
 
   const canonicalUrl = `${BUSINESS_URL}/equipment/${equipment.id}`;
   const categorySlug = slugForCategory(equipment.category);
+  const nonClinical = isNonClinicalEquipment(equipment.id);
+  const entityFragment = nonClinical ? "product" : "medical-device";
   const images = (equipment.images?.length ? equipment.images : [equipment.image]).map(
     (image) => (image.startsWith("http") ? image : `${BUSINESS_URL}${image}`)
   );
@@ -73,27 +70,27 @@ export default async function EquipmentDetailPage({ params }: EquipmentDetailPag
     { label: equipment.name, url: canonicalUrl },
   ]);
   const deviceSchema = generateMedicalDeviceSchema({
+    id: equipment.id,
+    isClinical: !nonClinical,
     name: equipment.name,
     description: equipment.fullDescription || equipment.description,
     url: canonicalUrl,
     image: images,
     manufacturer: equipment.manufacturer || equipment.partner,
     brand: equipment.partner,
-    seller: { name: BUSINESS_NAME, url: BUSINESS_URL },
     category: equipment.category,
     additionalProperty: equipment.specifications,
     relatedDeviceName: equipment.alternateOption,
-    countryOfOrigin: equipment.manufacturer || equipment.partner,
   });
   const detailPageSchema = generateWebPageSchema({
     name: `${equipment.name} | Regenis Life`,
     url: canonicalUrl,
     description: equipment.description,
-    pageType: "MedicalWebPage",
+    pageType: nonClinical ? "WebPage" : "MedicalWebPage",
     isPartOf: { name: BUSINESS_NAME, url: BUSINESS_URL },
     dateModified: SEO_LAST_MODIFIED,
-    about: { "@id": `${canonicalUrl}#medical-device` },
-    mainEntity: { "@id": `${canonicalUrl}#medical-device` },
+    about: { "@id": `${canonicalUrl}#${entityFragment}` },
+    mainEntity: { "@id": `${canonicalUrl}#${entityFragment}` },
     speakable: ["h1", ".equipment-detail-summary"],
   });
 
@@ -101,12 +98,10 @@ export default async function EquipmentDetailPage({ params }: EquipmentDetailPag
     [
       ["Category", equipment.category ?? ""],
       ["Manufacturer", equipment.manufacturer || equipment.partner],
-      ["Quantity", equipment.quantity ? String(equipment.quantity) : ""],
-      ["Site location", equipment.siteLocation ?? ""],
-      ["Current status", equipment.currentStatus ?? ""],
+      ["Partner", equipment.partner],
       ["Benchmark alternate", equipment.alternateOption ?? ""],
     ] as Array<[string, string]>
-  ).filter(([, value]) => Boolean(value));
+  ).filter(([, value]) => Boolean(value) && value !== "—");
 
   return (
     <main>

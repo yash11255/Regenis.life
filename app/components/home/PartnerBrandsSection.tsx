@@ -40,8 +40,9 @@ export default function PartnerBrandsSection({
         </Eyebrow>
         <SectionHeading className="mb-5">Brands we work with.</SectionHeading>
         <p className="max-w-[560px] text-[15px] font-light leading-[1.75] text-ink-muted">
-          {PARTNERS.length} category-leading manufacturers, sourced directly — each device
-          on our floor with regulatory clearance confirmed for its market.
+          {PARTNERS.length} partner brands — sourced from established global manufacturers
+          across clinical, diagnostics, recovery, and wellness categories, with
+          market-specific regulatory and configuration details confirmed per project.
         </p>
       </motion.div>
 

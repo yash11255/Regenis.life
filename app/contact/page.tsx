@@ -15,24 +15,21 @@ import {
   BUSINESS_PHONE,
 } from "@/lib/business-config";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
+import { buildPageMetadata } from "@/lib/metadata";
 import { SEO_LAST_MODIFIED } from "@/lib/seo-content";
 
 const PAGE_URL = `${BUSINESS_URL}/contact`;
+const PAGE_TITLE =
+  "Contact Regenis Life — Equipment Specifications & Procurement";
 const PAGE_DESCRIPTION =
-  "Contact Regenis Life about medical and wellness equipment — request clinical data, pricing, and availability, or discuss site planning, installation, and training for your facility.";
+  "Contact Regenis Life about clinical, diagnostics, recovery, and wellness equipment — request technical documentation, pricing, and availability, or discuss site planning, installation, and training.";
 
-export const metadata: Metadata = {
-  title: "Contact",
+export const metadata: Metadata = buildPageMetadata({
+  title: PAGE_TITLE,
+  absoluteTitle: true,
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/contact" },
-  openGraph: {
-    title: "Contact | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    url: "/contact",
-    type: "website",
-    images: [{ url: "/Regenis.png", alt: "Regenis Life" }],
-  },
-};
+  canonicalPath: "/contact",
+});
 
 export default function ContactPage() {
   const webPageSchema = generateWebPageSchema({

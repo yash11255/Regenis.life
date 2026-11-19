@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import FilterBar from "./FilterBar";
 import EquipmentCard from "./EquipmentCard";
 import InquiryModal from "./InquiryModal";
@@ -16,7 +17,7 @@ interface PartnerSectionProps {
 
 const ALL = "All Partners";
 
-export default function PartnerSection({
+function PartnerSectionInner({
   equipments,
   mode = "partner",
   initialValue,
@@ -89,5 +90,58 @@ export default function PartnerSection({
         equipmentName={selected}
       />
     </section>
+  );
+}
+
+function PartnerSectionWithSearchParams({
+  equipments,
+  initialValue,
+}: {
+  equipments: Equipment[];
+  initialValue?: string;
+}) {
+  const searchParams = useSearchParams();
+  const partnerParam = searchParams.get("partner") ?? initialValue;
+
+  return (
+    <PartnerSectionInner
+      key={partnerParam ?? ALL}
+      equipments={equipments}
+      mode="partner"
+      initialValue={partnerParam}
+    />
+  );
+}
+
+export default function PartnerSection({
+  equipments,
+  mode = "partner",
+  initialValue,
+}: PartnerSectionProps) {
+  if (mode === "category") {
+    return (
+      <PartnerSectionInner
+        equipments={equipments}
+        mode="category"
+        initialValue={initialValue}
+      />
+    );
+  }
+
+  return (
+    <Suspense
+      fallback={
+        <PartnerSectionInner
+          equipments={equipments}
+          mode="partner"
+          initialValue={initialValue}
+        />
+      }
+    >
+      <PartnerSectionWithSearchParams
+        equipments={equipments}
+        initialValue={initialValue}
+      />
+    </Suspense>
   );
 }

@@ -8,8 +8,8 @@ import { fadeUp, staggerContainer, viewportOnce } from "@/lib/motion";
 
 const POINTS = [
   {
-    title: "Globally certified",
-    desc: "Every platform is sourced directly from category-leading manufacturers, with regulatory clearance confirmed for the market where it is installed.",
+    title: "Global manufacturers",
+    desc: "Sourced from established global manufacturers across clinical, diagnostics, recovery, and wellness categories — with market-specific regulatory details confirmed per project.",
   },
   {
     title: "Exclusive partnerships",

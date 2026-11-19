@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import LegalPage from "../components/legal/LegalPage";
 import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_EMAIL, BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
 
 const PAGE_URL = `${BUSINESS_URL}/terms`;
@@ -10,18 +12,11 @@ const LAST_UPDATED_LABEL = "September 30, 2026";
 const PAGE_DESCRIPTION =
   "Review the terms governing use of the Regenis Life website, equipment information, enquiries, intellectual property, and third-party resources.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Terms of Use",
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/terms" },
-  openGraph: {
-    title: "Terms of Use | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    url: "/terms",
-    type: "website",
-    images: [{ url: "/Regenis.png", alt: "Regenis Life" }],
-  },
-};
+  canonicalPath: "/terms",
+});
 
 export default function TermsPage() {
   const webPageSchema = generateWebPageSchema({
@@ -93,7 +88,7 @@ export default function TermsPage() {
           accurate and that you are authorised to provide it. Do not submit confidential
           patient information or sensitive medical records through the general contact form.
           Personal information is handled as described in our{" "}
-          <a href="/privacy">Privacy Policy</a>.
+          <Link href="/privacy">Privacy Policy</Link>.
         </p>
 
         <h2>Acceptable use</h2>

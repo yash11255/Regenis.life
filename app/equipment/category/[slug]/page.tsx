@@ -9,7 +9,9 @@ import SectionHeading from "../../../components/ui/SectionHeading";
 import PartnerSection from "../../../components/equipment/PartnerSection";
 import { SchemaScript } from "../../../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import {
+  buildEquipmentItemListEntry,
   generateBreadcrumbSchema,
   generateItemListSchema,
   generateWebPageSchema,
@@ -28,24 +30,22 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;
   const category = categoryBySlug(slug);
-  if (!category) return { title: "Category Not Found", robots: { index: false } };
+  if (!category) {
+    return buildPageMetadata({
+      title: "Category Not Found",
+      description: "The requested Regenis Life equipment category could not be found.",
+      robots: { index: false, follow: false },
+    });
+  }
 
-  const title = `${category.name} Equipment`;
-  return {
-    title,
+  const first = equipmentInCategory(slug)[0];
+  return buildPageMetadata({
+    title: `${category.name} Equipment`,
+    ogTitle: `${category.name} | ${BUSINESS_NAME}`,
     description: category.blurb,
-    alternates: { canonical: `/equipment/category/${category.slug}` },
-    openGraph: {
-      title: `${category.name} | Regenis Life`,
-      description: category.blurb,
-      url: `${BUSINESS_URL}/equipment/category/${category.slug}`,
-      type: "website",
-      images: (() => {
-        const first = equipmentInCategory(slug)[0];
-        return first ? [{ url: first.image, alt: first.name }] : undefined;
-      })(),
-    },
-  };
+    canonicalPath: `/equipment/category/${category.slug}`,
+    images: first ? [{ url: first.image, alt: first.name }] : undefined,
+  });
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
@@ -74,16 +74,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   ]);
   const itemListSchema = generateItemListSchema(
     `${category.name} — Regenis Life`,
-    items.map((eq) => ({
-      name: eq.name,
-      url: `${BUSINESS_URL}/equipment/${eq.id}`,
-      description: eq.description,
-      image: `${BUSINESS_URL}${eq.image}`,
-      itemType: "MedicalDevice",
-      brand: eq.partner,
-      manufacturer: eq.manufacturer || eq.partner,
-      category: eq.category,
-    })),
+    items.map((eq) => buildEquipmentItemListEntry(eq, BUSINESS_URL)),
     `${pageUrl}#equipment-list`
   );
 

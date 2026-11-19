@@ -4,7 +4,6 @@ import { visibleEquipment } from "../data/equipment";
 import { CATEGORIES } from "../data/categories";
 import { fetchAllBlogSlugs, fetchBlogPaginationParams } from "@/lib/blog";
 
-const HERO_VIDEO_ID = "9uoYBcnOF2c";
 const XML_CONTENT_TYPE = "application/xml; charset=utf-8";
 
 function escapeXml(value: string) {
@@ -35,11 +34,10 @@ function urlXml(
     lastmod = SEO_LAST_MODIFIED,
   } = opts;
   return `<url>
-  <loc>${loc}</loc>
-  <lastmod>${lastmod}</lastmod>
+  <loc>${escapeXml(loc)}</loc>
+  <lastmod>${escapeXml(lastmod)}</lastmod>
   <changefreq>${changefreq}</changefreq>
-  <priority>${priority}</priority>
-  ${extra}
+  <priority>${priority}</priority>${extra ? `\n  ${extra}` : ""}
 </url>`;
 }
 
@@ -60,14 +58,6 @@ export async function GET() {
     urlXml(`${BUSINESS_URL}/equipment`, {
       changefreq: "weekly",
       priority: "0.9",
-      extra: `<video:video>
-    <video:thumbnail_loc>https://i.ytimg.com/vi/${HERO_VIDEO_ID}/maxresdefault.jpg</video:thumbnail_loc>
-    <video:title>Regenis Life Clinical Equipment Showcase</video:title>
-    <video:description>Regenis Life presents medical, wellness, rehabilitation, recovery, diagnostics, and clinical equipment for professional facilities.</video:description>
-    <video:player_loc>https://www.youtube.com/embed/${HERO_VIDEO_ID}</video:player_loc>
-    <video:publication_date>${SEO_LAST_MODIFIED}</video:publication_date>
-    <video:family_friendly>yes</video:family_friendly>
-  </video:video>`,
     }),
     urlXml(`${BUSINESS_URL}/equipment/all`, { changefreq: "weekly", priority: "0.8" }),
     urlXml(`${BUSINESS_URL}/about`, { changefreq: "monthly", priority: "0.6" }),
@@ -126,13 +116,13 @@ export async function GET() {
     )
     .join("\n");
 
+  const parts = [staticUrls, categoryUrls, productUrls, blogPageUrls, blogPostUrls].filter(
+    Boolean
+  );
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-${staticUrls}
-${categoryUrls}
-${productUrls}
-${blogPageUrls}
-${blogPostUrls}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${parts.join("\n")}
 </urlset>`;
 
   return new Response(xml, {

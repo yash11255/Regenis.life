@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function BlogImage({
   src,
@@ -14,25 +14,14 @@ export default function BlogImage({
   href?: string;
   variant: "card" | "hero";
 }) {
-  const [status, setStatus] = useState<"loading" | "ready" | "failed">("loading");
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const failed = !src || failedSrc === src;
 
-  useEffect(() => {
-    let active = true;
-    const preload = new Image();
-    preload.onload = () => active && setStatus("ready");
-    preload.onerror = () => active && setStatus("failed");
-    preload.src = src;
+  if (failed) return null;
 
-    return () => {
-      active = false;
-    };
-  }, [src]);
-
-  if (status === "failed") return null;
-
-  const image = status === "ready" ? (
-    // CMS images may be hosted on customer-managed domains that cannot be
-    // exhaustively listed in Next's remote image configuration.
+  // CMS images may be hosted on customer-managed domains that cannot be
+  // exhaustively listed in Next's remote image configuration.
+  const image = (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
@@ -42,11 +31,12 @@ export default function BlogImage({
           ? "h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
           : "aspect-[16/8] w-full rounded-[var(--radius-card)] object-cover shadow-[var(--shadow-raised)]"
       }
-      loading={variant === "card" ? "lazy" : "eager"}
+      loading={variant === "hero" ? "eager" : "lazy"}
+      fetchPriority={variant === "hero" ? "high" : undefined}
       decoding="async"
-      onError={() => setStatus("failed")}
+      onError={() => setFailedSrc(src)}
     />
-  ) : null;
+  );
 
   if (variant === "card" && href) {
     return (
@@ -60,5 +50,5 @@ export default function BlogImage({
     );
   }
 
-  return image || <div aria-hidden className="aspect-[16/8] w-full rounded-[var(--radius-card)] bg-sunken" />;
+  return image;
 }

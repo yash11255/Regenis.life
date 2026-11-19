@@ -8,7 +8,9 @@ import SectionHeading from "../../components/ui/SectionHeading";
 import PartnerSection from "../../components/equipment/PartnerSection";
 import { SchemaScript } from "../../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import {
+  buildEquipmentItemListEntry,
   generateBreadcrumbSchema,
   generateItemListSchema,
   generateOfferCatalogSchema,
@@ -19,46 +21,28 @@ import { visibleEquipment } from "../../data/equipment";
 
 const PAGE_URL = `${BUSINESS_URL}/equipment/all`;
 const PAGE_DESCRIPTION =
-  "Browse Regenis Life's full medical and wellness equipment catalog, including hyperbaric, aesthetic, rehabilitation, diagnostics, recovery, and robotics systems.";
+  "Browse Regenis Life's full clinical, diagnostics, recovery, and wellness equipment catalog — filter by global partner manufacturer across hyperbaric, aesthetic, rehabilitation, testing, and robotics systems.";
 
-interface AllEquipmentPageProps {
-  searchParams: Promise<{ partner?: string | string[] }>;
-}
-
-export const metadata: Metadata = {
-  title: "Medical Equipment Catalog",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Full Clinical & Wellness Equipment Catalog",
+  ogTitle: "All Equipment — Full Catalog | Regenis Life",
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/equipment/all" },
-  openGraph: {
-    title: "All Equipment | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    url: "/equipment/all",
-    type: "website",
-    images: visibleEquipment[0]
-      ? [{ url: visibleEquipment[0].image, alt: visibleEquipment[0].name }]
-      : undefined,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "All Equipment | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    images: [visibleEquipment[0]?.image ?? "/Regenis.png"],
-  },
-};
+  canonicalPath: "/equipment/all",
+  images: visibleEquipment[0]
+    ? [{ url: visibleEquipment[0].image, alt: visibleEquipment[0].name }]
+    : undefined,
+});
 
-export default async function AllEquipmentPage({ searchParams }: AllEquipmentPageProps) {
-  const params = await searchParams;
-  const initialPartner = Array.isArray(params.partner) ? params.partner[0] : params.partner;
-
+export default function AllEquipmentPage() {
   const collectionSchema = generateWebPageSchema({
-    name: "All Equipment | Regenis Life",
+    name: "All Equipment — Full Catalog | Regenis Life",
     url: PAGE_URL,
     description: PAGE_DESCRIPTION,
     pageType: "CollectionPage",
     isPartOf: { name: BUSINESS_NAME, url: BUSINESS_URL },
     mainEntity: { "@id": `${PAGE_URL}#equipment-list` },
     dateModified: SEO_LAST_MODIFIED,
-    about: { "@type": "Thing", name: "Medical and wellness equipment catalog" },
+    about: { "@type": "Thing", name: "Clinical, diagnostics, recovery, and wellness equipment catalog" },
     speakable: ["h1", ".catalog-page-summary"],
   });
   const breadcrumbSchema = generateBreadcrumbSchema([
@@ -68,16 +52,7 @@ export default async function AllEquipmentPage({ searchParams }: AllEquipmentPag
   ]);
   const itemListSchema = generateItemListSchema(
     "Regenis Life Equipment Catalog",
-    visibleEquipment.map((eq) => ({
-      name: eq.name,
-      url: `${BUSINESS_URL}/equipment/${eq.id}`,
-      description: eq.description,
-      image: `${BUSINESS_URL}${eq.image}`,
-      itemType: "MedicalDevice",
-      brand: eq.partner,
-      manufacturer: eq.manufacturer || eq.partner,
-      category: eq.category,
-    })),
+    visibleEquipment.map((eq) => buildEquipmentItemListEntry(eq, BUSINESS_URL)),
     `${PAGE_URL}#equipment-list`
   );
   const offerCatalogSchema = generateOfferCatalogSchema(
@@ -117,7 +92,7 @@ export default async function AllEquipmentPage({ searchParams }: AllEquipmentPag
         </Container>
       </Section>
 
-      <PartnerSection equipments={visibleEquipment} initialValue={initialPartner} />
+      <PartnerSection equipments={visibleEquipment} />
     </main>
   );
 }

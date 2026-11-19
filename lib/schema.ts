@@ -1,7 +1,7 @@
 /**
  * SEO Schema Generation Library
  * Provides TypeScript-safe schema generators for JSON-LD markup
- * Usage: Use these functions to generate schema for meta tags via next/script
+ * Usage: Use these functions to generate schema for meta tags via SchemaScript
  */
 
 // ============================================================================
@@ -10,39 +10,19 @@
 
 export interface PostalAddress {
   "@type": "PostalAddress";
-  streetAddress: string;
-  addressLocality: string;
-  addressRegion: string;
-  postalCode: string;
+  streetAddress?: string;
+  addressLocality?: string;
+  addressRegion?: string;
+  postalCode?: string;
   addressCountry: string;
-}
-
-export interface GeoCoordinates {
-  "@type": "GeoCoordinates";
-  latitude: number;
-  longitude: number;
 }
 
 export interface ContactPoint {
   "@type": "ContactPoint";
-  telephone: string;
-  contactType: "Customer Service" | "Support" | "Emergency Support" | "Sales";
+  telephone?: string;
+  contactType: "Customer Service" | "Support" | "Emergency Support" | "Sales" | "sales";
   email?: string;
   areaServed?: string;
-}
-
-export interface OpeningHoursSpecification {
-  "@type": "OpeningHoursSpecification";
-  dayOfWeek: string[];
-  opens: string;
-  closes: string;
-}
-
-export interface MedicalService {
-  "@type": "MedicalBusiness" | "Thing";
-  name: string;
-  description?: string;
-  url?: string;
 }
 
 export interface FAQItem {
@@ -52,8 +32,76 @@ export interface FAQItem {
 
 export interface LDJsonSchema {
   "@context": "https://schema.org";
-  "@type": string;
+  "@type": string | string[];
   [key: string]: unknown;
+}
+
+// ============================================================================
+// EQUIPMENT CLASSIFICATION & MANUFACTURER PARSING HELPERS
+// ============================================================================
+
+/**
+ * Non-clinical portfolio items that should use Product + WebPage
+ * rather than MedicalDevice + MedicalWebPage:
+ * - "16": Silverfox Derma Chair (motorized aesthetic treatment chair / furniture)
+ * - "24": Unitree G1 EDU U8 Robot + Nvidia AGX Thor System (R&D humanoid robotics)
+ */
+const NON_CLINICAL_EQUIPMENT_IDS = new Set(["16", "24"]);
+
+export function isNonClinicalEquipment(id: string): boolean {
+  return NON_CLINICAL_EQUIPMENT_IDS.has(id);
+}
+
+const COUNTRY_PATTERNS: Array<[RegExp, string]> = [
+  [/\bTurkey\b/i, "Turkey"],
+  [/\bSpain\b/i, "Spain"],
+  [/\bBulgaria\b/i, "Bulgaria"],
+  [/\bSouth Korea\b/i, "South Korea"],
+  [/\bGermany\b/i, "Germany"],
+  [/\bAustralia\b/i, "Australia"],
+  [/\b(?:UAE|United Arab Emirates)\b/i, "United Arab Emirates"],
+  [/\bItaly\b/i, "Italy"],
+  [/\b(?:USA|United States)\b/i, "United States"],
+  [/\b(?:UK|United Kingdom)\b/i, "United Kingdom"],
+  [/\bSwitzerland\b/i, "Switzerland"],
+  [/\bChina\b/i, "China"],
+  [/\bIsrael\b/i, "Israel"],
+  [/\bFinland\b/i, "Finland"],
+  [/\bFrance\b/i, "France"],
+];
+
+export function parseManufacturerInfo(
+  rawManufacturer?: string,
+  fallbackPartner?: string
+): { manufacturerName: string; countryOfOrigin?: string } {
+  const raw = (rawManufacturer || fallbackPartner || "").trim();
+  if (!raw) return { manufacturerName: "" };
+
+  const primarySegment = raw.split(/\s*\/\s*/)[0].trim();
+  const dashParts = primarySegment.split(/\s*[—–-]\s+/);
+  let manufacturerName = dashParts[0].trim();
+  let locationText = dashParts.slice(1).join(", ").trim();
+
+  const parenMatch = manufacturerName.match(/^(.+?)\s*\(([^)]+)\)$/);
+  if (parenMatch) {
+    manufacturerName = parenMatch[1].trim();
+    locationText = [locationText, parenMatch[2].trim()].filter(Boolean).join(", ");
+  }
+
+  let countryOfOrigin: string | undefined;
+  if (locationText) {
+    for (const [pattern, country] of COUNTRY_PATTERNS) {
+      if (pattern.test(locationText)) {
+        countryOfOrigin = country;
+        break;
+      }
+    }
+  }
+
+  return {
+    manufacturerName: manufacturerName || fallbackPartner?.trim() || raw,
+    ...(countryOfOrigin ? { countryOfOrigin } : {}),
+  };
 }
 
 // ============================================================================
@@ -91,6 +139,14 @@ export function generateOrganizationSchema(
       url: params.image,
     },
     description: params.description,
+    address: params.address || {
+      "@type": "PostalAddress",
+      addressCountry: "IN",
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "India",
+    },
   };
 
   if (params.sameAs.length) schema.sameAs = params.sameAs;
@@ -101,88 +157,13 @@ export function generateOrganizationSchema(
       {
         "@type": "ContactPoint",
         contactType: "sales",
+        areaServed: "IN",
         ...(params.telephone.length ? { telephone: params.telephone[0] } : {}),
         ...(params.email.length ? { email: params.email[0] } : {}),
       },
     ];
   }
   if (params.knowsAbout?.length) schema.knowsAbout = params.knowsAbout;
-
-  return schema;
-}
-
-// ============================================================================
-// MEDICAL BUSINESS / LOCAL BUSINESS SCHEMA
-// ============================================================================
-
-export interface MedicalBusinessSchemaParams {
-  name: string;
-  url: string;
-  logo: string;
-  image: string;
-  description: string;
-  address: PostalAddress;
-  geo: GeoCoordinates;
-  telephone: string[];
-  email: string[];
-  contactPoints: ContactPoint[];
-  openingHours: OpeningHoursSpecification[];
-  areaServed: string[];
-  services: MedicalService[];
-  priceRange?: string;
-  rating?: {
-    ratingValue: number;
-    reviewCount: number;
-  };
-  sameAs?: string[];
-}
-
-export function generateMedicalBusinessSchema(
-  params: MedicalBusinessSchemaParams
-): LDJsonSchema {
-  const schema: LDJsonSchema = {
-    "@context": "https://schema.org",
-    "@type": "MedicalBusiness",
-    name: params.name,
-    url: params.url,
-    logo: {
-      "@type": "ImageObject",
-      url: params.logo,
-      width: 200,
-      height: 200,
-    },
-    image: {
-      "@type": "ImageObject",
-      url: params.image,
-      width: 1200,
-      height: 628,
-    },
-    description: params.description,
-    address: params.address,
-    geo: params.geo,
-    telephone: params.telephone,
-    email: params.email,
-    contactPoint: params.contactPoints,
-    openingHoursSpecification: params.openingHours,
-    areaServed: params.areaServed,
-    availableService: params.services,
-  };
-
-  if (params.priceRange) {
-    schema.priceRange = params.priceRange;
-  }
-
-  if (params.rating) {
-    schema.aggregateRating = {
-      "@type": "AggregateRating",
-      ratingValue: params.rating.ratingValue,
-      reviewCount: params.rating.reviewCount,
-    };
-  }
-
-  if (params.sameAs?.length) {
-    schema.sameAs = params.sameAs;
-  }
 
   return schema;
 }
@@ -274,7 +255,6 @@ export function generateWebSiteSchema(params: WebSiteSchemaParams): LDJsonSchema
     ...(params.inLanguage ? { inLanguage: params.inLanguage } : {}),
   };
 
-
   if (params.searchUrl) {
     schema.potentialAction = {
       "@type": "SearchAction",
@@ -347,12 +327,48 @@ export function generateWebPageSchema(params: WebPageSchemaParams): LDJsonSchema
 export interface ItemListEntry {
   name: string;
   url: string;
+  itemId?: string;
   description?: string;
   image?: string;
   itemType?: string | string[];
   brand?: string;
   manufacturer?: string;
+  countryOfOrigin?: string;
   category?: string;
+}
+
+export function buildEquipmentItemListEntry(
+  eq: {
+    id: string;
+    name: string;
+    description: string;
+    image: string;
+    partner: string;
+    manufacturer?: string;
+    category?: string;
+  },
+  baseUrl: string
+): ItemListEntry {
+  const nonClinical = isNonClinicalEquipment(eq.id);
+  const url = `${baseUrl}/equipment/${eq.id}`;
+  const { manufacturerName, countryOfOrigin } = parseManufacturerInfo(
+    eq.manufacturer,
+    eq.partner
+  );
+  const image = eq.image.startsWith("http") ? eq.image : `${baseUrl}${eq.image}`;
+
+  return {
+    name: eq.name,
+    url,
+    itemId: `${url}#${nonClinical ? "product" : "medical-device"}`,
+    description: eq.description,
+    image,
+    itemType: nonClinical ? "Product" : ["Product", "MedicalDevice"],
+    brand: eq.partner,
+    manufacturer: manufacturerName || eq.partner,
+    ...(countryOfOrigin ? { countryOfOrigin } : {}),
+    category: eq.category,
+  };
 }
 
 export function generateItemListSchema(
@@ -374,7 +390,7 @@ export function generateItemListSchema(
       url: item.url,
       item: {
         "@type": item.itemType || "Thing",
-        "@id": item.url,
+        "@id": item.itemId || item.url,
         name: item.name,
         url: item.url,
         ...(item.description ? { description: item.description } : {}),
@@ -385,6 +401,9 @@ export function generateItemListSchema(
         ...(item.manufacturer
           ? { manufacturer: { "@type": "Organization", name: item.manufacturer } }
           : {}),
+        ...(item.countryOfOrigin
+          ? { countryOfOrigin: { "@type": "Country", name: item.countryOfOrigin } }
+          : {}),
         ...(item.category ? { category: item.category } : {}),
       },
     })),
@@ -392,31 +411,38 @@ export function generateItemListSchema(
 }
 
 // ============================================================================
-// MEDICAL DEVICE SCHEMA
+// PRODUCT / MEDICAL DEVICE SCHEMA
 // ============================================================================
 
 export interface MedicalDeviceSchemaParams {
+  id?: string;
   name: string;
   description: string;
   url: string;
   image: string[];
   manufacturer: string;
   brand: string;
-  seller: { name: string; url: string };
   category?: string;
   additionalProperty?: { label: string; value: string }[];
   relatedDeviceName?: string;
-  /** ISO 3166-1 alpha-2 country code for the manufacturer's country */
-  countryOfOrigin?: string;
+  isClinical?: boolean;
 }
 
 export function generateMedicalDeviceSchema(
   params: MedicalDeviceSchemaParams
 ): LDJsonSchema {
+  const isClinical =
+    params.isClinical ?? (params.id ? !isNonClinicalEquipment(params.id) : true);
+  const { manufacturerName, countryOfOrigin } = parseManufacturerInfo(
+    params.manufacturer,
+    params.brand
+  );
+  const fragment = isClinical ? "medical-device" : "product";
+
   const schema: LDJsonSchema = {
     "@context": "https://schema.org",
-    "@type": "MedicalDevice",
-    "@id": `${params.url}#medical-device`,
+    "@type": isClinical ? ["Product", "MedicalDevice"] : "Product",
+    "@id": `${params.url}#${fragment}`,
     name: params.name,
     description: params.description,
     url: params.url,
@@ -424,16 +450,11 @@ export function generateMedicalDeviceSchema(
     mainEntityOfPage: { "@id": `${params.url}#webpage` },
     manufacturer: {
       "@type": "Organization",
-      name: params.manufacturer,
+      name: manufacturerName || params.brand,
     },
     brand: {
       "@type": "Brand",
       name: params.brand,
-    },
-    seller: {
-      "@type": "Organization",
-      name: params.seller.name,
-      url: params.seller.url,
     },
   };
 
@@ -447,14 +468,14 @@ export function generateMedicalDeviceSchema(
   }
   if (params.relatedDeviceName) {
     schema.isRelatedTo = {
-      "@type": "MedicalDevice",
+      "@type": isClinical ? ["Product", "MedicalDevice"] : "Product",
       name: params.relatedDeviceName,
     };
   }
-  if (params.countryOfOrigin) {
+  if (countryOfOrigin) {
     schema.countryOfOrigin = {
       "@type": "Country",
-      name: params.countryOfOrigin,
+      name: countryOfOrigin,
     };
   }
 
@@ -479,37 +500,6 @@ export function generateOfferCatalogSchema(
       },
     })),
   };
-}
-
-// ============================================================================
-// VIDEO OBJECT SCHEMA
-// ============================================================================
-
-export interface VideoObjectSchemaParams {
-  name: string;
-  description: string;
-  thumbnailUrl: string;
-  uploadDate: string;
-  contentUrl?: string;
-  embedUrl?: string;
-  duration?: string;
-}
-
-export function generateVideoObjectSchema(params: VideoObjectSchemaParams): LDJsonSchema {
-  const schema: LDJsonSchema = {
-    "@context": "https://schema.org",
-    "@type": "VideoObject",
-    name: params.name,
-    description: params.description,
-    thumbnailUrl: params.thumbnailUrl,
-    uploadDate: params.uploadDate,
-  };
-
-  if (params.contentUrl) schema.contentUrl = params.contentUrl;
-  if (params.embedUrl) schema.embedUrl = params.embedUrl;
-  if (params.duration) schema.duration = params.duration;
-
-  return schema;
 }
 
 // ============================================================================
@@ -543,12 +533,11 @@ export function generateSiteNavigationSchema(
 // ============================================================================
 
 /**
- * Safely serialize schema to JSON string
- * Handles circular references and undefined values
+ * Safely serialize schema to JSON string and escape `<` to prevent script-tag breakouts
  */
-export function serializeSchema(schema: LDJsonSchema): string {
+export function serializeSchema(schema: LDJsonSchema | Record<string, unknown>): string {
   try {
-    return JSON.stringify(schema);
+    return JSON.stringify(schema).replace(/</g, "\\u003c");
   } catch (error) {
     console.error("Schema serialization error:", error);
     return "{}";

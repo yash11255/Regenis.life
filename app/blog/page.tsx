@@ -11,28 +11,17 @@ import {
   fetchBlogPosts,
 } from "@/lib/blog";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
 
 const PAGE_URL = `${BUSINESS_URL}/blog`;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Medical Equipment Insights",
+  ogTitle: `${BLOG_NAME} | ${BUSINESS_NAME}`,
   description: BLOG_DESCRIPTION,
-  alternates: { canonical: "/blog" },
-  openGraph: {
-    title: `${BLOG_NAME} | ${BUSINESS_NAME}`,
-    description: BLOG_DESCRIPTION,
-    url: PAGE_URL,
-    type: "website",
-    images: [{ url: "/Regenis.png", alt: BUSINESS_NAME }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${BLOG_NAME} | ${BUSINESS_NAME}`,
-    description: BLOG_DESCRIPTION,
-    images: ["/Regenis.png"],
-  },
-};
+  canonicalPath: "/blog",
+});
 
 export default async function BlogPage() {
   const result = await fetchBlogPosts();

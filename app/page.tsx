@@ -12,59 +12,50 @@ import SectionHeading from "./components/ui/SectionHeading";
 import Button from "./components/ui/Button";
 import { SchemaScript } from "./components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import {
+  buildEquipmentItemListEntry,
   generateBreadcrumbSchema,
   generateFAQSchema,
   generateItemListSchema,
   generateWebPageSchema,
 } from "@/lib/schema";
-import { getEquipmentFaqs, SEO_LAST_MODIFIED } from "@/lib/seo-content";
+import { getHomeFaqs, SEO_LAST_MODIFIED } from "@/lib/seo-content";
 import { visibleEquipment } from "./data/equipment";
 
+const PAGE_TITLE =
+  "Regenis Life | Clinical, Longevity & Wellness Equipment Partner in India";
 const PAGE_DESCRIPTION =
-  "Regenis Life curates a portfolio of clinically precise, globally certified medical and wellness equipment — hyperbaric, aesthetic, rehabilitation, diagnostics, recovery, and robotics systems — for professional facilities.";
+  "Regenis Life provides curated clinical, diagnostics, recovery, and wellness equipment from global manufacturers — with turnkey site planning, installation, and staff training across India.";
 
 const FEATURED_ITEMS = visibleEquipment.slice(0, 6);
 
-export const metadata: Metadata = {
-  title: { absolute: "Regenis Life | Curated Medical & Wellness Equipment" },
+export const metadata: Metadata = buildPageMetadata({
+  title: PAGE_TITLE,
+  absoluteTitle: true,
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: "Regenis Life | Curated Medical & Wellness Equipment",
-    description: PAGE_DESCRIPTION,
-    url: "/",
-    type: "website",
-    images: [{ url: "/Regenis.png", width: 1536, height: 1024, alt: "Regenis Life" }],
-  },
-};
+  canonicalPath: "/",
+});
 
 export default function HomePage() {
+  const homeFaqs = getHomeFaqs(visibleEquipment.length);
   const webPageSchema = generateWebPageSchema({
-    name: "Regenis Life | Curated Medical & Wellness Equipment",
-    url: `${BUSINESS_URL}/`,
+    name: PAGE_TITLE,
+    url: BUSINESS_URL,
     description: PAGE_DESCRIPTION,
     pageType: "WebPage",
     isPartOf: { name: BUSINESS_NAME, url: BUSINESS_URL },
     dateModified: SEO_LAST_MODIFIED,
     mainEntity: { "@id": `${BUSINESS_URL}/#featured-equipment` },
+    speakable: ["h1", ".equipment-page-summary"],
   });
   const breadcrumbSchema = generateBreadcrumbSchema([{ label: "Home", url: BUSINESS_URL }]);
   const itemListSchema = generateItemListSchema(
     "Regenis Life Featured Equipment",
-    FEATURED_ITEMS.map((eq) => ({
-      name: eq.name,
-      url: `${BUSINESS_URL}/equipment/${eq.id}`,
-      description: eq.description,
-      image: `${BUSINESS_URL}${eq.image}`,
-      itemType: "MedicalDevice",
-      brand: eq.partner,
-      manufacturer: eq.manufacturer || eq.partner,
-      category: eq.category,
-    })),
+    FEATURED_ITEMS.map((eq) => buildEquipmentItemListEntry(eq, BUSINESS_URL)),
     `${BUSINESS_URL}/#featured-equipment`
   );
-  const faqSchema = generateFAQSchema(getEquipmentFaqs(visibleEquipment.length));
+  const faqSchema = generateFAQSchema(homeFaqs);
 
   return (
     <main>
@@ -94,7 +85,11 @@ export default function HomePage() {
         ctaLabel="View full catalog"
       />
       <WhyPartners />
-      <FAQSection />
+      <FAQSection
+        faqs={homeFaqs}
+        heading="Partnering with Regenis Life."
+        intro="Answers for clinical, rehabilitation, longevity, and performance facilities planning equipment procurement in India."
+      />
 
       <Section band="dark" divide className="text-center">
         <Eyebrow className="mb-6 text-ink-inverse-faint">Planning a new facility?</Eyebrow>

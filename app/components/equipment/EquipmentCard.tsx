@@ -35,7 +35,7 @@ export default function EquipmentCard({
   return (
     <motion.article
       className="group grid grid-cols-1 border-b border-line lg:grid-cols-2"
-      initial={{ opacity: 0, y: 28 }}
+      initial={index < 2 ? false : { opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.5, delay: Math.min(index * 0.03, 0.12), ease: easeOutExpo }}
@@ -50,9 +50,9 @@ export default function EquipmentCard({
         </div>
 
         <Link href={`/equipment/${id}`} className="block">
-          <h3 className="mb-6 max-w-[420px] font-display text-[clamp(26px,3.4vw,44px)] font-light leading-[1.12] text-ink transition-colors group-hover:text-primary">
+          <h2 className="mb-6 max-w-[420px] font-display text-[clamp(26px,3.4vw,44px)] font-light leading-[1.12] text-ink transition-colors group-hover:text-primary">
             {name}
-          </h3>
+          </h2>
         </Link>
 
         <p className="mb-8 max-w-[400px] text-[15px] font-light leading-[1.75] text-ink-muted">
@@ -92,7 +92,13 @@ export default function EquipmentCard({
         <div className="absolute left-6 top-6 flex items-center border-l-2 border-primary bg-raised/95 px-5 py-3 backdrop-blur-sm">
           <div className="relative flex h-8 w-32 items-center">
             {logo ? (
-              <Image src={logo} alt={partner} fill className="object-contain object-left" />
+              <Image
+                src={logo}
+                alt={partner}
+                fill
+                sizes="128px"
+                className="object-contain object-left"
+              />
             ) : (
               <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink">
                 {partner}

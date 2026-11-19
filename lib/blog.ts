@@ -344,23 +344,28 @@ export const extractFaqItems = (post: BlogPost, safeHtml = ""): BlogFaqResult =>
     : { items: [], source: "none" };
 };
 
+const isOrganizationalAuthor = (author?: string) =>
+  !author?.trim() || /regenis|editorial|team|staff|desk/i.test(author);
+
 const authorSchema = (post: BlogPost) =>
-  post.author
-    ? { "@type": "Person", name: post.author }
-    : { "@id": `${BUSINESS_URL}/#organization` };
+  isOrganizationalAuthor(post.author)
+    ? {
+        "@type": "Organization",
+        "@id": `${BUSINESS_URL}/#organization`,
+        name: BUSINESS_NAME,
+      }
+    : { "@type": "Person", name: post.author!.trim() };
 
 export const buildBlogPostingSchema = ({
   post,
   path,
   wordCount,
   readingTime,
-  faqCount = 0,
 }: {
   post: BlogPost;
   path: string;
   wordCount: number;
   readingTime: number;
-  faqCount?: number;
 }): LDJsonSchema => {
   const url = absoluteUrl(path);
   const published = post.publishedAt || post.createdAt;
@@ -394,7 +399,6 @@ export const buildBlogPostingSchema = ({
       "@type": "SpeakableSpecification",
       cssSelector: ["h1", "[data-speakable]"],
     },
-    ...(faqCount ? { mainEntity: { "@id": `${url}#faq` } } : {}),
   };
 };
 
@@ -445,16 +449,20 @@ export const buildBlogItemListSchema = ({
   })),
 });
 
-export const buildFaqSchema = (items: BlogFaqItem[], path: string): LDJsonSchema => ({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "@id": `${absoluteUrl(path)}#faq`,
-  mainEntity: items.map((item) => ({
-    "@type": "Question",
-    name: item.q,
-    acceptedAnswer: { "@type": "Answer", text: item.a },
-  })),
-});
+export const buildFaqSchema = (items: BlogFaqItem[], path: string): LDJsonSchema => {
+  const url = absoluteUrl(path);
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    isPartOf: { "@id": `${url}#webpage` },
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+};
 
 export const getDisplayDate = (post: BlogPost) =>
   post.publishedAt || post.createdAt || post.updatedAt || null;

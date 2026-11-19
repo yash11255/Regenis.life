@@ -41,17 +41,14 @@ export const metadata: Metadata = {
       follow: true,
     },
   },
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     title: "Regenis Life | Clinical & Wellness Equipment",
     description: BUSINESS_DESCRIPTION,
-    url: "/",
+    url: BUSINESS_URL,
     siteName: "Regenis Life",
     locale: BUSINESS_GEO.locale,
     type: "website",
-    images: [{ url: "/Regenis.png", width: 1536, height: 1024, alt: "Regenis Life" }],
+    images: [{ url: "/Regenis.png", width: 2062, height: 763, alt: "Regenis Life" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -118,10 +115,6 @@ export default function RootLayout({
         <link rel="alternate" type="text/plain" href="/llms.txt" title="Regenis Life (LLM-readable)" />
         <meta name="geo.region" content={BUSINESS_GEO.region} />
         <meta name="geo.placename" content={BUSINESS_GEO.placename} />
-        <meta
-          httpEquiv="content-language"
-          content={`${BUSINESS_GEO.language}-${BUSINESS_GEO.country}`}
-        />
         <SchemaScript
           schema={[organizationSchema, websiteSchema, siteNavigationSchema]}
           id="business-schema"

@@ -41,16 +41,20 @@ export function SchemaScript({ schema, id }: SchemaScriptProps): ReactElement {
     return <></>;
   }
 
-  // If multiple schemas, wrap in array with @graph
+  // If multiple schemas, wrap in @graph and strip duplicate inner @context
   const jsonLd: Record<string, unknown> =
     validSchemas.length === 1
       ? (validSchemas[0] as Record<string, unknown>)
       : {
           "@context": "https://schema.org",
-          "@graph": validSchemas,
+          "@graph": validSchemas.map((item) => {
+            const copy = { ...(item as Record<string, unknown>) };
+            delete copy["@context"];
+            return copy;
+          }),
         };
 
-  const jsonString = serializeSchema(jsonLd as LDJsonSchema);
+  const jsonString = serializeSchema(jsonLd);
 
   return (
     <script

@@ -26,6 +26,7 @@ import {
   stripBrandSuffix,
 } from "@/lib/blog";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
 
 interface BlogPostPageProps { params: Promise<{ slug: string }> }
@@ -45,7 +46,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data: post } = await fetchBlogBySlug(slug);
-  if (!post) return { title: "Insight Not Found", robots: { index: false, follow: false } };
+  if (!post) {
+    return buildPageMetadata({
+      title: "Insight Not Found",
+      description: "The requested Regenis Life insight could not be found.",
+      robots: { index: false, follow: false },
+    });
+  }
 
   const path = buildBlogPostPath(post.slug);
   const title = stripBrandSuffix(post.metaTitle || post.title);
@@ -53,26 +60,21 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const publishedTime = post.publishedAt || post.createdAt;
   const modifiedTime = post.updatedAt || publishedTime;
   const image = getPostImageUrl(post);
+  const authorName = getAuthorName(post);
 
-  return {
+  return buildPageMetadata({
     title,
     description,
+    canonicalPath: path,
+    type: "article",
+    publishedTime,
+    modifiedTime,
+    articleAuthors: [authorName],
+    tags: post.tags,
     keywords: keywordsFor(post.keywords),
-    authors: [{ name: getAuthorName(post) }],
-    alternates: { canonical: path },
-    openGraph: {
-      title: `${title} | ${BUSINESS_NAME}`,
-      description,
-      url: absoluteUrl(path),
-      type: "article",
-      publishedTime,
-      modifiedTime,
-      authors: [getAuthorName(post)],
-      tags: post.tags,
-      images: [{ url: image, alt: post.title }],
-    },
-    twitter: { card: "summary_large_image", title, description, images: [image] },
-  };
+    authors: [{ name: authorName }],
+    images: [{ url: image, alt: post.title }],
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
@@ -109,7 +111,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       { label: "Insights", url: `${BUSINESS_URL}/blog` },
       { label: post.title, url: pageUrl },
     ]),
-    buildBlogPostingSchema({ post, path, wordCount, readingTime, faqCount: faq.items.length }),
+    buildBlogPostingSchema({ post, path, wordCount, readingTime }),
     ...(faq.items.length ? [buildFaqSchema(faq.items, path)] : []),
   ];
 

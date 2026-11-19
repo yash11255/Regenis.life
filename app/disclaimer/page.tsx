@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import LegalPage from "../components/legal/LegalPage";
 import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_EMAIL, BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
 
 const PAGE_URL = `${BUSINESS_URL}/disclaimer`;
@@ -10,18 +11,11 @@ const LAST_UPDATED_LABEL = "September 30, 2026";
 const PAGE_DESCRIPTION =
   "Understand the limits of Regenis Life website content, product descriptions, clinical claims, regulatory information, and professional-use guidance.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Medical and Product Disclaimer",
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/disclaimer" },
-  openGraph: {
-    title: "Medical and Product Disclaimer | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    url: "/disclaimer",
-    type: "website",
-    images: [{ url: "/Regenis.png", alt: "Regenis Life" }],
-  },
-};
+  canonicalPath: "/disclaimer",
+});
 
 export default function DisclaimerPage() {
   const webPageSchema = generateWebPageSchema({

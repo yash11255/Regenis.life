@@ -23,7 +23,7 @@ export interface Equipment {
   alternateOption?: string;
 }
 
-export const equipmentMockData: Equipment[] = [
+const equipmentMockData: Equipment[] = [
   {
     id: "01",
     partner: "HPO TECH",
@@ -559,7 +559,7 @@ export const equipmentMockData: Equipment[] = [
   {
     id: "20",
     partner: "Canfield Scientific",
-    name: "Hiarmetrix Analysis System — D200",
+    name: "HairMetrix Analysis System — D200",
     category: "Body Contouring & Facial Aesthetics",
     manufacturer: "Canfield Scientific — USA",
     quantity: 1,
@@ -568,7 +568,7 @@ export const equipmentMockData: Equipment[] = [
     tagline: "AI Hair & Scalp Consultation",
     logo: "/logos/canfield-scientific.svg",
     description: "An AI-enabled handheld dermoscopy system that captures magnified skin and scalp images to assess hydration, texture, pores, and hair or follicle density for personalized consultations.",
-    fullDescription: "The Hiarmetrix Analysis System — D200 is a compact, AI-enabled handheld dermoscopy solution from Canfield Scientific. It captures magnified images of skin and scalp for close-up assessment of hydration, texture, pores, and hair or follicle density, supporting personalized skincare and hair-health consultations across treatment rooms.",
+    fullDescription: "The HairMetrix Analysis System — D200 is a compact, AI-enabled handheld dermoscopy solution from Canfield Scientific. It captures magnified images of skin and scalp for close-up assessment of hydration, texture, pores, and hair or follicle density, supporting personalized skincare and hair-health consultations across treatment rooms.",
     image: "/pi7-images-250kb/20-canfield-hairmetrix.jpg",
     images: ["/pi7-images-250kb/20-canfield-hairmetrix.jpg"],
     specifications: [

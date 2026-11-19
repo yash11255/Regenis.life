@@ -12,45 +12,36 @@ import SectionHeading from "../components/ui/SectionHeading";
 import Button from "../components/ui/Button";
 import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL, BUSINESS_EMAIL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import {
+  buildEquipmentItemListEntry,
   generateBreadcrumbSchema,
   generateFAQSchema,
   generateItemListSchema,
-  generateVideoObjectSchema,
   generateWebPageSchema,
 } from "@/lib/schema";
 import { getEquipmentFaqs, SEO_LAST_MODIFIED } from "@/lib/seo-content";
 import { visibleEquipment } from "../data/equipment";
 
 const PAGE_URL = `${BUSINESS_URL}/equipment`;
+const PAGE_TITLE = "Clinical, Diagnostics & Recovery Equipment Portfolio";
 const PAGE_DESCRIPTION =
-  "Explore Regenis Life's medical and wellness equipment portfolio: hyperbaric, aesthetic, rehabilitation, diagnostics, recovery, and robotics systems for professional facilities.";
+  "Explore Regenis Life's curated clinical, diagnostics, recovery, and wellness equipment portfolio — hyperbaric, RF/HIFEM, cryotherapy, shockwave, neuro-wellness, biomechanics, and robotics systems.";
 const FEATURED_ITEMS = visibleEquipment.slice(0, 6);
 
-export const metadata: Metadata = {
-  title: "Medical & Wellness Equipment",
+export const metadata: Metadata = buildPageMetadata({
+  title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/equipment" },
-  openGraph: {
-    title: "Medical Equipment Showcase | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    url: "/equipment",
-    type: "website",
-    images: visibleEquipment[0]
-      ? [{ url: visibleEquipment[0].image, alt: visibleEquipment[0].name }]
-      : undefined,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Medical Equipment Showcase | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    images: [visibleEquipment[0]?.image ?? "/Regenis.png"],
-  },
-};
+  canonicalPath: "/equipment",
+  images: visibleEquipment[0]
+    ? [{ url: visibleEquipment[0].image, alt: visibleEquipment[0].name }]
+    : undefined,
+});
 
 export default function EquipmentShowcasePage() {
+  const equipmentFaqs = getEquipmentFaqs(visibleEquipment.length);
   const collectionSchema = generateWebPageSchema({
-    name: "Medical & Wellness Equipment | Regenis Life",
+    name: `${PAGE_TITLE} | ${BUSINESS_NAME}`,
     url: PAGE_URL,
     description: PAGE_DESCRIPTION,
     pageType: "CollectionPage",
@@ -59,7 +50,7 @@ export default function EquipmentShowcasePage() {
     dateModified: SEO_LAST_MODIFIED,
     about: {
       "@type": "Thing",
-      name: "Medical and wellness equipment for professional facilities",
+      name: "Clinical, diagnostics, recovery, and wellness equipment for professional facilities",
     },
     speakable: ["h1", ".equipment-page-summary"],
   });
@@ -69,33 +60,16 @@ export default function EquipmentShowcasePage() {
   ]);
   const itemListSchema = generateItemListSchema(
     "Regenis Life Featured Equipment",
-    FEATURED_ITEMS.map((eq) => ({
-      name: eq.name,
-      url: `${BUSINESS_URL}/equipment/${eq.id}`,
-      description: eq.description,
-      image: `${BUSINESS_URL}${eq.image}`,
-      itemType: "MedicalDevice",
-      brand: eq.partner,
-      manufacturer: eq.manufacturer || eq.partner,
-      category: eq.category,
-    })),
+    FEATURED_ITEMS.map((eq) => buildEquipmentItemListEntry(eq, BUSINESS_URL)),
     `${PAGE_URL}#featured-equipment`
   );
-  const faqSchema = generateFAQSchema(getEquipmentFaqs(visibleEquipment.length));
-  const videoSchema = generateVideoObjectSchema({
-    name: "Regenis Life Clinical Equipment Showcase",
-    description:
-      "Regenis Life presents medical, wellness, rehabilitation, recovery, diagnostics, and clinical equipment for professional facilities.",
-    thumbnailUrl: "https://i.ytimg.com/vi/9uoYBcnOF2c/maxresdefault.jpg",
-    uploadDate: SEO_LAST_MODIFIED,
-    embedUrl: "https://www.youtube.com/embed/9uoYBcnOF2c",
-  });
+  const faqSchema = generateFAQSchema(equipmentFaqs);
 
   return (
     <main>
       <SchemaScript
         id="equipment-list-schema"
-        schema={[collectionSchema, breadcrumbSchema, itemListSchema, faqSchema, videoSchema]}
+        schema={[collectionSchema, breadcrumbSchema, itemListSchema, faqSchema]}
       />
 
       <Hero />
@@ -107,7 +81,7 @@ export default function EquipmentShowcasePage() {
         ctaLabel="View full catalog"
       />
       <WhyPartners />
-      <FAQSection />
+      <FAQSection faqs={equipmentFaqs} />
 
       <Section id="contact" band="dark" divide className="scroll-mt-28 text-center">
         <Eyebrow className="mb-6 text-ink-inverse-faint">Ready to equip your facility?</Eyebrow>

@@ -14,6 +14,7 @@ import {
   fetchBlogPosts,
 } from "@/lib/blog";
 import { BUSINESS_NAME, BUSINESS_URL } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
 
 interface BlogArchivePageProps {
@@ -26,21 +27,22 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: BlogArchivePageProps): Promise<Metadata> {
   const page = Number((await params).page);
-  if (!Number.isInteger(page) || page < 2) return { robots: { index: false } };
+  if (!Number.isInteger(page) || page < 2) {
+    return buildPageMetadata({
+      title: "Insights Archive",
+      description: BLOG_DESCRIPTION,
+      robots: { index: false, follow: false },
+    });
+  }
 
   const path = buildBlogListPath(page);
   const title = `Medical Equipment Insights, Page ${page}`;
-  return {
+  const description = `${BLOG_DESCRIPTION} (Page ${page})`;
+  return buildPageMetadata({
     title,
-    description: BLOG_DESCRIPTION,
-    alternates: { canonical: path },
-    openGraph: {
-      title: `${title} | ${BUSINESS_NAME}`,
-      description: BLOG_DESCRIPTION,
-      url: absoluteUrl(path),
-      type: "website",
-    },
-  };
+    description,
+    canonicalPath: path,
+  });
 }
 
 export default async function BlogArchivePage({ params }: BlogArchivePageProps) {
@@ -53,11 +55,12 @@ export default async function BlogArchivePage({ params }: BlogArchivePageProps) 
 
   const path = buildBlogListPath(page);
   const pageUrl = absoluteUrl(path);
+  const description = `${BLOG_DESCRIPTION} (Page ${page})`;
   const schemas = [
     generateWebPageSchema({
       name: `${BLOG_NAME}, Page ${page}`,
       url: pageUrl,
-      description: BLOG_DESCRIPTION,
+      description,
       pageType: "CollectionPage",
       isPartOf: { name: BUSINESS_NAME, url: BUSINESS_URL },
       mainEntity: { "@id": `${pageUrl}#blog-item-list` },

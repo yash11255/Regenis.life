@@ -10,26 +10,23 @@ import WhyPartners from "../components/equipment/WhyPartners";
 import PartnerBrandsSection from "../components/home/PartnerBrandsSection";
 import { SchemaScript } from "../components/SchemaScript";
 import { BUSINESS_NAME, BUSINESS_URL, businessConfig } from "@/lib/business-config";
+import { buildPageMetadata } from "@/lib/metadata";
 import { generateBreadcrumbSchema, generateWebPageSchema } from "@/lib/schema";
 import { SEO_LAST_MODIFIED } from "@/lib/seo-content";
 import { visibleEquipment } from "../data/equipment";
 
 const PAGE_URL = `${BUSINESS_URL}/about`;
+const PAGE_TITLE =
+  "About Regenis Life — Clinical & Longevity Equipment Partner in India";
 const PAGE_DESCRIPTION =
-  "Regenis Life curates globally certified medical and wellness equipment for clinical, rehabilitation, aesthetic, recovery, and performance facilities — with end-to-end support across sourcing, installation, and training.";
+  "Regenis Life provides curated clinical, diagnostics, recovery, and wellness equipment from global manufacturers for clinical, rehabilitation, aesthetic, recovery, and performance facilities — with end-to-end support across sourcing, installation, and training.";
 
-export const metadata: Metadata = {
-  title: "About",
+export const metadata: Metadata = buildPageMetadata({
+  title: PAGE_TITLE,
+  absoluteTitle: true,
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: "/about" },
-  openGraph: {
-    title: "About | Regenis Life",
-    description: PAGE_DESCRIPTION,
-    url: "/about",
-    type: "website",
-    images: [{ url: "/Regenis.png", alt: "Regenis Life" }],
-  },
-};
+  canonicalPath: "/about",
+});
 
 export default function AboutPage() {
   const partnerCount = new Set(visibleEquipment.map((e) => e.partner)).size;

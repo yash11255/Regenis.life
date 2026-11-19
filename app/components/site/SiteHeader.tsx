@@ -78,6 +78,7 @@ export default function SiteHeader() {
               alt="Regenis Life"
               width={2062}
               height={763}
+              sizes="(max-width: 768px) 175px, 210px"
               priority
               className={cn(
                 "h-16 w-auto object-contain transition md:h-[76px]",
